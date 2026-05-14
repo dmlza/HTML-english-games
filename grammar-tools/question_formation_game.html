@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Formation Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #6c5ce7 100%);
+            min-height: 100vh;
+        }
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .rules {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: #495057;
+        }
+        .rule-section {
+            margin: 15px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .rule-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .example {
+            background: #e8f5e8;
+            padding: 8px;
+            border-radius: 6px;
+            margin: 5px 0;
+            font-family: monospace;
+        }
+        .transform-arrow {
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        .score {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .statement-display {
+            text-align: center;
+            font-size: 24px;
+            color: #2c3e50;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #dee2e6;
+        }
+        .statement-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .question-display {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 30px 0;
+            min-height: 80px;
+            line-height: 1.5;
+            padding: 25px;
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            border: 3px dashed #f39c12;
+        }
+        .blank {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin: 0 5px;
+            display: inline-block;
+            min-width: 60px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .btn {
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        .btn-do {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+        .btn-does {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .btn-did {
+            background: linear-gradient(45deg, #f39c12, #d68910);
+            color: white;
+        }
+        .btn-is {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+        .btn-are {
+            background: linear-gradient(45deg, #1abc9c, #16a085);
+            color: white;
+        }
+        .btn-was {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+            color: white;
+        }
+        .btn-were {
+            background: linear-gradient(45deg, #e67e22, #d35400);
+            color: white;
+        }
+        .btn-can {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        .btn-will {
+            background: linear-gradient(45deg, #fd79a8, #e84393);
+            color: white;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        .feedback {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 25px 0;
+            min-height: 50px;
+        }
+        .correct {
+            color: #27ae60;
+        }
+        .incorrect {
+            color: #e74c3c;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .control-btn {
+            background: linear-gradient(45deg, #636e72, #2d3436);
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        .control-btn:hover {
+            background: linear-gradient(45deg, #2d3436, #000);
+            transform: translateY(-3px);
+        }
+        .progress {
+            text-align: center;
+            margin: 20px 0;
+            color: #6c757d;
+            font-size: 18px;
+        }
+        .category {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 15px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>❓ Question Formation Game</h1>
+        
+        <div class="rules">
+            <h3>📖 How to Make Questions - Super Simple!</h3>
+            
+            <div class="rule-section">
+                <div class="rule-title">1. Habits & Facts (things you do often)</div>
+                <div class="example">
+                    "I like pizza" <span class="transform-arrow">→</span> "<strong>Do</strong> I like pizza?"<br>
+                    "She likes pizza" <span class="transform-arrow">→</span> "<strong>Does</strong> she like pizza?"
+                </div>
+                <small><strong>Look for:</strong> I/you/we/they = DO | he/she/it = DOES</small>
+            </div>
+            
+            <div class="rule-section">
+                <div class="rule-title">2. Past Actions (yesterday, last week, this morning)</div>
+                <div class="example">
+                    "I played soccer yesterday" <span class="transform-arrow">→</span> "<strong>Did</strong> I play soccer yesterday?"<br>
+                    "She went home last night" <span class="transform-arrow">→</span> "<strong>Did</strong> she go home last night?"
+                </div>
+                <small><strong>Look for:</strong> Time words like yesterday, last night, this morning = always DID</small>
+            </div>
+            
+            <div class="rule-section">
+                <div class="rule-title">3. AM/IS/ARE/WAS/WERE - Just move to front!</div>
+                <div class="example">
+                    "She <strong>is</strong> happy" <span class="transform-arrow">→</span> "<strong>Is</strong> she happy?"<br>
+                    "They <strong>were</strong> late yesterday" <span class="transform-arrow">→</span> "<strong>Were</strong> they late yesterday?"
+                </div>
+                <small><strong>Look for:</strong> am/is/are/was/were in the sentence = move it to the front!</small>
+            </div>
+            
+            <div class="rule-section">
+                <div class="rule-title">4. CAN/WILL/SHOULD - Just move to front!</div>
+                <div class="example">
+                    "I <strong>can</strong> swim" <span class="transform-arrow">→</span> "<strong>Can</strong> I swim?"<br>
+                    "She <strong>will</strong> come tomorrow" <span class="transform-arrow">→</span> "<strong>Will</strong> she come tomorrow?"
+                </div>
+                <small><strong>Look for:</strong> can/will/should in the sentence = move it to the front!</small>
+            </div>
+        </div>
+        
+        <div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+        <div class="progress">Question <span id="current">1</span> of <span id="totalQuestions">32</span></div>
+        
+        <div class="category" id="category">Click "Next Question" to start!</div>
+        
+        <div class="statement-display">
+            <div class="statement-label">Statement:</div>
+            <div id="statement">Ready to make questions?</div>
+        </div>
+        
+        <div class="question-display" id="question">Choose the correct word to start the question!</div>
+        
+        <div class="buttons">
+            <button class="btn btn-do" onclick="checkAnswer('Do')">DO</button>
+            <button class="btn btn-does" onclick="checkAnswer('Does')">DOES</button>
+            <button class="btn btn-did" onclick="checkAnswer('Did')">DID</button>
+            <button class="btn btn-is" onclick="checkAnswer('Is')">IS</button>
+            <button class="btn btn-are" onclick="checkAnswer('Are')">ARE</button>
+            <button class="btn btn-was" onclick="checkAnswer('Was')">WAS</button>
+            <button class="btn btn-were" onclick="checkAnswer('Were')">WERE</button>
+            <button class="btn btn-can" onclick="checkAnswer('Can')">CAN</button>
+            <button class="btn btn-will" onclick="checkAnswer('Will')">WILL</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="nextQuestion()">Next Question</button>
+            <button class="control-btn" onclick="resetGame()">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // DO questions (I/you/we/they present)
+            {statement: "I like ice cream every day", question: "___ I like ice cream?", answer: "Do", category: "Simple Present", fullAnswer: "Do I like ice cream?"},
+            {statement: "You speak English well", question: "___ you speak English?", answer: "Do", category: "Simple Present", fullAnswer: "Do you speak English?"},
+            {statement: "We live in Bangkok now", question: "___ we live in Bangkok?", answer: "Do", category: "Simple Present", fullAnswer: "Do we live in Bangkok?"},
+            {statement: "They play football every week", question: "___ they play football?", answer: "Do", category: "Simple Present", fullAnswer: "Do they play football?"},
+            
+            // DOES questions (he/she/it present)
+            {statement: "She likes pizza a lot", question: "___ she like pizza?", answer: "Does", category: "Simple Present", fullAnswer: "Does she like pizza?"},
+            {statement: "He works hard every day", question: "___ he work hard?", answer: "Does", category: "Simple Present", fullAnswer: "Does he work hard?"},
+            {statement: "It rains a lot here", question: "___ it rain a lot?", answer: "Does", category: "Simple Present", fullAnswer: "Does it rain a lot?"},
+            {statement: "My dog barks loudly", question: "___ your dog bark loudly?", answer: "Does", category: "Simple Present", fullAnswer: "Does your dog bark loudly?"},
+            
+            // DID questions (past tense - clear time markers)
+            {statement: "I played soccer yesterday", question: "___ I play soccer yesterday?", answer: "Did", category: "Simple Past", fullAnswer: "Did I play soccer yesterday?"},
+            {statement: "She went to school this morning", question: "___ she go to school this morning?", answer: "Did", category: "Simple Past", fullAnswer: "Did she go to school this morning?"},
+            {statement: "They watched a movie last night", question: "___ they watch a movie last night?", answer: "Did", category: "Simple Past", fullAnswer: "Did they watch a movie last night?"},
+            {statement: "We finished homework an hour ago", question: "___ we finish homework?", answer: "Did", category: "Simple Past", fullAnswer: "Did we finish homework?"},
+            {statement: "He ate breakfast this morning", question: "___ he eat breakfast this morning?", answer: "Did", category: "Simple Past", fullAnswer: "Did he eat breakfast this morning?"},
+            
+            // IS questions
+            {statement: "She is happy today", question: "___ she happy?", answer: "Is", category: "BE Verb Present", fullAnswer: "Is she happy?"},
+            {statement: "He is a good teacher", question: "___ he a good teacher?", answer: "Is", category: "BE Verb Present", fullAnswer: "Is he a good teacher?"},
+            {statement: "It is raining outside", question: "___ it raining outside?", answer: "Is", category: "BE Verb Present", fullAnswer: "Is it raining outside?"},
+            {statement: "The book is very interesting", question: "___ the book interesting?", answer: "Is", category: "BE Verb Present", fullAnswer: "Is the book interesting?"},
+            
+            // ARE questions
+            {statement: "You are tired now", question: "___ you tired?", answer: "Are", category: "BE Verb Present", fullAnswer: "Are you tired?"},
+            {statement: "We are good students", question: "___ we good students?", answer: "Are", category: "BE Verb Present", fullAnswer: "Are we good students?"},
+            {statement: "They are coming soon", question: "___ they coming soon?", answer: "Are", category: "BE Verb Present", fullAnswer: "Are they coming soon?"},
+            {statement: "The children are playing outside", question: "___ the children playing?", answer: "Are", category: "BE Verb Present", fullAnswer: "Are the children playing?"},
+            
+            // WAS questions
+            {statement: "I was sick yesterday", question: "___ I sick yesterday?", answer: "Was", category: "BE Verb Past", fullAnswer: "Was I sick yesterday?"},
+            {statement: "She was at home last night", question: "___ she at home last night?", answer: "Was", category: "BE Verb Past", fullAnswer: "Was she at home last night?"},
+            {statement: "He was sleeping when I called", question: "___ he sleeping?", answer: "Was", category: "BE Verb Past", fullAnswer: "Was he sleeping?"},
+            {statement: "It was very cold yesterday", question: "___ it cold yesterday?", answer: "Was", category: "BE Verb Past", fullAnswer: "Was it cold yesterday?"},
+            
+            // WERE questions
+            {statement: "You were late this morning", question: "___ you late this morning?", answer: "Were", category: "BE Verb Past", fullAnswer: "Were you late this morning?"},
+            {statement: "We were best friends in school", question: "___ we best friends?", answer: "Were", category: "BE Verb Past", fullAnswer: "Were we best friends?"},
+            {statement: "They were studying all night", question: "___ they studying all night?", answer: "Were", category: "BE Verb Past", fullAnswer: "Were they studying all night?"},
+            {statement: "The dogs were barking loudly", question: "___ the dogs barking?", answer: "Were", category: "BE Verb Past", fullAnswer: "Were the dogs barking?"},
+            
+            // CAN questions
+            {statement: "I can swim very well", question: "___ I swim very well?", answer: "Can", category: "Modal Verb", fullAnswer: "Can I swim very well?"},
+            {statement: "She can speak French fluently", question: "___ she speak French?", answer: "Can", category: "Modal Verb", fullAnswer: "Can she speak French?"},
+            {statement: "We can help you with this", question: "___ we help you?", answer: "Can", category: "Modal Verb", fullAnswer: "Can we help you?"},
+            
+            // WILL questions
+            {statement: "I will come tomorrow morning", question: "___ I come tomorrow?", answer: "Will", category: "Future", fullAnswer: "Will I come tomorrow?"},
+            {statement: "She will call you later", question: "___ she call you later?", answer: "Will", category: "Future", fullAnswer: "Will she call you later?"},
+            {statement: "They will arrive at 5pm", question: "___ they arrive at 5pm?", answer: "Will", category: "Future", fullAnswer: "Will they arrive at 5pm?"}
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+        let shuffledQuestions = [...questions];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function updateDisplay() {
+            const question = shuffledQuestions[currentIndex];
+            document.getElementById('statement').textContent = question.statement;
+            document.getElementById('question').innerHTML = question.question.replace('___', '<span class="blank">?</span>');
+            document.getElementById('category').textContent = question.category;
+            document.getElementById('current').textContent = currentIndex + 1;
+            document.getElementById('totalQuestions').textContent = shuffledQuestions.length;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex;
+            document.getElementById('feedback').textContent = '';
+            answered = false;
+        }
+
+        function checkAnswer(selectedWord) {
+            if (answered) return;
+            
+            const correctAnswer = shuffledQuestions[currentIndex].answer;
+            const feedbackDiv = document.getElementById('feedback');
+            const fullAnswer = shuffledQuestions[currentIndex].fullAnswer;
+            
+            if (selectedWord === correctAnswer) {
+                score++;
+                feedbackDiv.innerHTML = `✅ Correct!<br><strong>"${fullAnswer}"</strong>`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                feedbackDiv.innerHTML = `❌ Wrong! Correct answer:<br><strong>"${fullAnswer}"</strong>`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+            
+            // Show the answer in the question
+            document.getElementById('question').innerHTML = shuffledQuestions[currentIndex].question.replace('___', `<span class="blank" style="background: ${selectedWord === correctAnswer ? '#27ae60' : '#e74c3c'}">${correctAnswer}</span>`);
+            
+            answered = true;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex + 1;
+        }
+
+        function nextQuestion() {
+            if (currentIndex < shuffledQuestions.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            } else {
+                document.getElementById('statement').textContent = 'Game Complete! 🎉';
+                document.getElementById('question').textContent = 'You finished all questions!';
+                document.getElementById('category').textContent = `Final Score: ${score}/${shuffledQuestions.length}`;
+                const percentage = Math.round((score/shuffledQuestions.length)*100);
+                document.getElementById('feedback').textContent = `${percentage}% Correct! ${percentage >= 80 ? 'Question master!' : percentage >= 60 ? 'Good job!' : 'Keep practicing questions!'}`;
+                document.getElementById('feedback').className = 'feedback';
+            }
+        }
+
+        function resetGame() {
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            shuffledQuestions = shuffleArray([...questions]);
+            updateDisplay();
+        }
+
+        // Initialize game
+        shuffledQuestions = shuffleArray([...questions]);
+        updateDisplay();
+    </script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjunction Practice Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #6c5ce7 100%);
+            min-height: 100vh;
+        }
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .rules {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            font-size: 15px;
+            color: #495057;
+        }
+        .rule-section {
+            margin: 10px 0;
+            padding: 8px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .conjunction-type {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .score {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .sentence-display {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 30px 0;
+            min-height: 100px;
+            line-height: 1.5;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border: 3px dashed #6c757d;
+        }
+        .blank {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 10px;
+            margin: 0 8px;
+            display: inline-block;
+            min-width: 80px;
+            font-size: 24px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .btn {
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        .btn-and {
+            background: linear-gradient(45deg, #00b894, #00a085);
+            color: white;
+        }
+        .btn-but {
+            background: linear-gradient(45deg, #e17055, #d63031);
+            color: white;
+        }
+        .btn-or {
+            background: linear-gradient(45deg, #fdcb6e, #e17055);
+            color: white;
+        }
+        .btn-so {
+            background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+            color: white;
+        }
+        .btn-because {
+            background: linear-gradient(45deg, #fd79a8, #e84393);
+            color: white;
+        }
+        .btn-although {
+            background: linear-gradient(45deg, #00cec9, #00b894);
+            color: white;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .feedback {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin: 25px 0;
+            min-height: 30px;
+        }
+        .correct {
+            color: #27ae60;
+        }
+        .incorrect {
+            color: #e74c3c;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .control-btn {
+            background: linear-gradient(45deg, #636e72, #2d3436);
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        .control-btn:hover {
+            background: linear-gradient(45deg, #2d3436, #000);
+            transform: translateY(-3px);
+        }
+        .progress {
+            text-align: center;
+            margin: 20px 0;
+            color: #6c757d;
+            font-size: 18px;
+        }
+        .category {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 15px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🔗 Conjunction Practice Game</h1>
+        
+        <div class="rules">
+            <div class="rule-section">
+                <span class="conjunction-type">AND:</span> adds information (I like pizza and pasta)
+            </div>
+            <div class="rule-section">
+                <span class="conjunction-type">BUT:</span> shows contrast (I'm tired but happy)
+            </div>
+            <div class="rule-section">
+                <span class="conjunction-type">OR:</span> shows choice (Coffee or tea?)
+            </div>
+            <div class="rule-section">
+                <span class="conjunction-type">SO:</span> shows result (I'm hungry so I'll eat)
+            </div>
+            <div class="rule-section">
+                <span class="conjunction-type">BECAUSE:</span> shows reason (I'm happy because it's Friday)
+            </div>
+            <div class="rule-section">
+                <span class="conjunction-type">ALTHOUGH:</span> shows contrast with surprise (Although it's raining, I'm going out)
+            </div>
+        </div>
+        
+        <div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+        <div class="progress">Question <span id="current">1</span> of <span id="totalQuestions">36</span></div>
+        
+        <div class="category" id="category">Click "Next Question" to start!</div>
+        
+        <div class="sentence-display" id="sentence">Ready to connect ideas?</div>
+        
+        <div class="buttons">
+            <button class="btn btn-and" onclick="checkAnswer('and')">AND</button>
+            <button class="btn btn-but" onclick="checkAnswer('but')">BUT</button>
+            <button class="btn btn-or" onclick="checkAnswer('or')">OR</button>
+            <button class="btn btn-so" onclick="checkAnswer('so')">SO</button>
+            <button class="btn btn-because" onclick="checkAnswer('because')">BECAUSE</button>
+            <button class="btn btn-although" onclick="checkAnswer('although')">ALTHOUGH</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="nextQuestion()">Next Question</button>
+            <button class="control-btn" onclick="resetGame()">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // AND - adding information
+            {sentence: "I like coffee ___ tea", answer: "and", category: "Adding Information", explanation: "Both drinks are liked"},
+            {sentence: "She studies hard ___ gets good grades", answer: "and", category: "Adding Information", explanation: "Two related actions"},
+            {sentence: "We bought bread ___ milk", answer: "and", category: "Adding Information", explanation: "Two items purchased"},
+            {sentence: "He's tall ___ handsome", answer: "and", category: "Adding Information", explanation: "Two positive qualities"},
+            {sentence: "I work ___ study at the same time", answer: "and", category: "Adding Information", explanation: "Two simultaneous activities"},
+            {sentence: "She can sing ___ dance very well", answer: "and", category: "Adding Information", explanation: "Two abilities"},
+
+            // BUT - showing contrast
+            {sentence: "I'm tired ___ I can't sleep", answer: "but", category: "Showing Contrast", explanation: "Unexpected result"},
+            {sentence: "The weather is cold ___ sunny", answer: "but", category: "Showing Contrast", explanation: "Contrasting conditions"},
+            {sentence: "He's smart ___ lazy", answer: "but", category: "Showing Contrast", explanation: "Contrasting qualities"},
+            {sentence: "I want to go ___ I'm too busy", answer: "but", category: "Showing Contrast", explanation: "Desire vs reality"},
+            {sentence: "The food looks good ___ tastes bad", answer: "but", category: "Showing Contrast", explanation: "Appearance vs taste"},
+            {sentence: "She's young ___ very wise", answer: "but", category: "Showing Contrast", explanation: "Age vs wisdom"},
+
+            // OR - showing choice/alternatives
+            {sentence: "Do you want coffee ___ tea?", answer: "or", category: "Showing Choice", explanation: "Two options to choose from"},
+            {sentence: "We can walk ___ take the bus", answer: "or", category: "Showing Choice", explanation: "Transportation options"},
+            {sentence: "Is he coming today ___ tomorrow?", answer: "or", category: "Showing Choice", explanation: "Time options"},
+            {sentence: "You can pay cash ___ card", answer: "or", category: "Showing Choice", explanation: "Payment options"},
+            {sentence: "Should I call ___ send an email?", answer: "or", category: "Showing Choice", explanation: "Communication options"},
+            {sentence: "We could watch a movie ___ go shopping", answer: "or", category: "Showing Choice", explanation: "Activity options"},
+
+            // SO - showing result/consequence
+            {sentence: "I'm hungry ___ I'll make lunch", answer: "so", category: "Showing Result", explanation: "Hunger leads to action"},
+            {sentence: "It's raining ___ we'll stay inside", answer: "so", category: "Showing Result", explanation: "Weather affects plans"},
+            {sentence: "She was late ___ she missed the bus", answer: "so", category: "Showing Result", explanation: "Being late has consequence"},
+            {sentence: "The store was closed ___ we went home", answer: "so", category: "Showing Result", explanation: "Closed store affects plans"},
+            {sentence: "I forgot my umbrella ___ I got wet", answer: "so", category: "Showing Result", explanation: "Forgetting leads to consequence"},
+            {sentence: "He studied hard ___ he passed the test", answer: "so", category: "Showing Result", explanation: "Study leads to success"},
+
+            // BECAUSE - showing reason/cause
+            {sentence: "I'm happy ___ it's my birthday", answer: "because", category: "Showing Reason", explanation: "Birthday is the cause of happiness"},
+            {sentence: "She's tired ___ she worked all night", answer: "because", category: "Showing Reason", explanation: "Work is the cause of tiredness"},
+            {sentence: "We stayed home ___ it was raining", answer: "because", category: "Showing Reason", explanation: "Rain is the reason for staying"},
+            {sentence: "He's successful ___ he works hard", answer: "because", category: "Showing Reason", explanation: "Hard work causes success"},
+            {sentence: "I can't come ___ I'm sick", answer: "because", category: "Showing Reason", explanation: "Sickness is the reason"},
+            {sentence: "They're moving ___ they found better jobs", answer: "because", category: "Showing Reason", explanation: "Jobs are the reason for moving"},
+
+            // ALTHOUGH - showing contrast with surprise
+            {sentence: "___ it's expensive, I'll buy it", answer: "although", category: "Contrast + Surprise", explanation: "Despite high cost, still buying"},
+            {sentence: "___ she's young, she's very mature", answer: "although", category: "Contrast + Surprise", explanation: "Youth vs unexpected maturity"},
+            {sentence: "___ I don't like vegetables, I eat them", answer: "although", category: "Contrast + Surprise", explanation: "Despite dislike, still eating"},
+            {sentence: "___ he's rich, he's not happy", answer: "although", category: "Contrast + Surprise", explanation: "Wealth doesn't bring expected happiness"},
+            {sentence: "___ it was difficult, we finished", answer: "although", category: "Contrast + Surprise", explanation: "Despite difficulty, completed task"},
+            {sentence: "___ I'm tired, I'll keep working", answer: "although", category: "Contrast + Surprise", explanation: "Despite tiredness, continuing work"}
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+        let shuffledQuestions = [...questions];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function updateDisplay() {
+            const question = shuffledQuestions[currentIndex];
+            document.getElementById('sentence').innerHTML = question.sentence.replace('___', '<span class="blank">?</span>');
+            document.getElementById('category').textContent = question.category;
+            document.getElementById('current').textContent = currentIndex + 1;
+            document.getElementById('totalQuestions').textContent = shuffledQuestions.length;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex;
+            document.getElementById('feedback').textContent = '';
+            answered = false;
+        }
+
+        function checkAnswer(selectedConjunction) {
+            if (answered) return;
+            
+            const correctAnswer = shuffledQuestions[currentIndex].answer;
+            const feedbackDiv = document.getElementById('feedback');
+            const sentence = shuffledQuestions[currentIndex].sentence;
+            const explanation = shuffledQuestions[currentIndex].explanation;
+            
+            if (selectedConjunction === correctAnswer) {
+                score++;
+                feedbackDiv.textContent = `✅ Correct! ${explanation}`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                const correctSentence = sentence.replace('___', correctAnswer.toUpperCase());
+                feedbackDiv.textContent = `❌ Wrong! "${correctSentence}" - ${explanation}`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+            
+            // Show the answer in the sentence
+            document.getElementById('sentence').innerHTML = sentence.replace('___', `<span class="blank" style="background: ${selectedConjunction === correctAnswer ? '#27ae60' : '#e74c3c'}">${correctAnswer.toUpperCase()}</span>`);
+            
+            answered = true;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex + 1;
+        }
+
+        function nextQuestion() {
+            if (currentIndex < shuffledQuestions.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            } else {
+                document.getElementById('sentence').textContent = 'Game Complete! 🎉';
+                document.getElementById('category').textContent = `Final Score: ${score}/${shuffledQuestions.length}`;
+                const percentage = Math.round((score/shuffledQuestions.length)*100);
+                document.getElementById('feedback').textContent = `${percentage}% Correct! ${percentage >= 80 ? 'Excellent!' : percentage >= 60 ? 'Good job!' : 'Keep practicing!'}`;
+                document.getElementById('feedback').className = 'feedback';
+            }
+        }
+
+        function resetGame() {
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            shuffledQuestions = shuffleArray([...questions]);
+            updateDisplay();
+        }
+
+        // Initialize game
+        shuffledQuestions = shuffleArray([...questions]);
+        updateDisplay();
+    </script>
+</body>
+</html>

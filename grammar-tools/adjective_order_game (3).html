@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjective Order Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #5a6cf3;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+        
+        .order-guide {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #5a6cf3;
+        }
+        
+        .order-guide.collapsed {
+            padding: 10px 15px;
+        }
+        
+        .guide-toggle {
+            background: none;
+            border: none;
+            color: #5a6cf3;
+            cursor: pointer;
+            font-weight: bold;
+            float: right;
+            font-size: 1.2em;
+        }
+        
+        .order-guide h3 {
+            color: #5a6cf3;
+            margin-bottom: 10px;
+        }
+        
+        .order-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .order-item {
+            background: #5a6cf3;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .game-area {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .score-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+        
+        .score { font-size: 1.1em; font-weight: bold; color: #5a6cf3; }
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e7ff;
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5a6cf3, #667eea);
+            transition: width 0.3s ease;
+        }
+        
+        .question-container {
+            margin-bottom: 25px;
+        }
+        
+        .question-text {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #444;
+        }
+        
+        .scenario {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-style: italic;
+        }
+        
+        .adjective-bank {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .bank-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0066cc;
+        }
+        
+        .adjective-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .adjective-chip {
+            background: white;
+            border: 2px solid #0066cc;
+            color: #0066cc;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        
+        .adjective-chip:hover {
+            background: #0066cc;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .adjective-chip.selected {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .sentence-builder {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .sentence-part {
+            background: #6c757d;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin: 2px;
+        }
+        
+        .sentence-part.adjective {
+            background: #28a745;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #5a6cf3, #667eea);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+        
+        .discussion-prompt {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .discussion-prompt h4 {
+            color: #1976D2;
+            margin-bottom: 8px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .difficulty-selector {
+            margin: 10px 0;
+        }
+        
+        .difficulty-btn {
+            margin: 0 5px;
+            padding: 8px 16px;
+            border: 2px solid #5a6cf3;
+            background: white;
+            color: #5a6cf3;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .difficulty-btn.active {
+            background: #5a6cf3;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .header h1 { font-size: 1.8em; }
+            .order-list { justify-content: flex-start; }
+            .score-progress { flex-direction: column; gap: 10px; }
+            .progress-bar { margin: 0; width: 100%; }
+            .button-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Adjective Order Master</h1>
+            <p>Learn the secret pattern of English adjective order!</p>
+            
+            <div class="order-guide" id="orderGuide">
+                <h3>📝 The Magic Order: <button class="guide-toggle" onclick="toggleGuide()">−</button></h3>
+                <div class="guide-content" id="guideContent">
+                    <div class="order-list">
+                        <span class="order-item">Opinion</span>
+                        <span class="order-item">Size</span>
+                        <span class="order-item">Age</span>
+                        <span class="order-item">Shape</span>
+                        <span class="order-item">Color</span>
+                        <span class="order-item">Origin</span>
+                        <span class="order-item">Material</span>
+                        <span class="order-item">Purpose</span>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                        💡 Example: "A beautiful small old round red Chinese wooden dining table"
+                    </p>
+                    <p style="margin-top: 8px; font-size: 0.85em; color: #888;">
+                        💭 Memory trick: <strong>O</strong>pinion <strong>S</strong>ize <strong>A</strong>ge <strong>S</strong>hape <strong>C</strong>olor <strong>O</strong>rigin <strong>M</strong>aterial <strong>P</strong>urpose
+                        <br>🧠 Easy phrase: "<strong>O</strong>ur <strong>S</strong>mart <strong>A</strong>unt <strong>S</strong>ells <strong>C</strong>ool <strong>O</strong>ld <strong>M</strong>exican <strong>P</strong>ottery"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="score-progress">
+                <div class="score">Score: <span id="score">0</span>/10</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress"></div>
+                </div>
+                <div class="score">Question: <span id="current">1</span>/10</div>
+            </div>
+
+            <div class="controls">
+                <div class="difficulty-selector">
+                    <span>Difficulty: </span>
+                    <button class="difficulty-btn active" data-level="beginner">Beginner</button>
+                    <button class="difficulty-btn" data-level="intermediate">Intermediate</button>
+                    <button class="difficulty-btn" data-level="advanced">Advanced</button>
+                </div>
+            </div>
+
+            <div class="question-container" id="question-container">
+                <!-- Question content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gameState = {
+            score: 0,
+            current: 1,
+            total: 10,
+            difficulty: 'beginner',
+            selectedAdjectives: [],
+            currentQuestion: null
+        };
+
+        // Load saved progress
+        function loadProgress() {
+            const saved = localStorage.getItem('adjectiveGameProgress');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.assign(gameState, data);
+                updateDisplay();
+            }
+        }
+
+        // Save progress
+        function saveProgress() {
+            localStorage.setItem('adjectiveGameProgress', JSON.stringify(gameState));
+        }
+
+        // Simple, logical combinations - focus on teaching order, not confusing students
+        const simpleScenarios = {
+            beginner: [
+                { noun: 'car', correctAdjectives: ['beautiful', 'small'], wrongAdjectives: ['sleeping'] },
+                { noun: 'house', correctAdjectives: ['big', 'old'], wrongAdjectives: ['cooking'] },
+                { noun: 'bag', correctAdjectives: ['nice', 'red'], wrongAdjectives: ['working'] },
+                { noun: 'phone', correctAdjectives: ['new', 'black'], wrongAdjectives: ['wooden'] },
+                { noun: 'book', correctAdjectives: ['good', 'thick'], wrongAdjectives: ['metal'] },
+                { noun: 'chair', correctAdjectives: ['comfortable', 'wooden'], wrongAdjectives: ['sleeping'] }
+            ],
+            intermediate: [
+                { noun: 'restaurant', correctAdjectives: ['wonderful', 'small', 'Italian'], wrongAdjectives: ['sleeping'] },
+                { noun: 'vacation', correctAdjectives: ['amazing', 'long', 'European'], wrongAdjectives: ['wooden'] },
+                { noun: 'office', correctAdjectives: ['modern', 'large', 'glass'], wrongAdjectives: ['cooking'] },
+                { noun: 'apartment', correctAdjectives: ['beautiful', 'tiny', 'downtown'], wrongAdjectives: ['metal'] },
+                { noun: 'computer', correctAdjectives: ['fast', 'small', 'silver'], wrongAdjectives: ['cooking'] },
+                { noun: 'gift', correctAdjectives: ['special', 'round', 'golden'], wrongAdjectives: ['working'] }
+            ],
+            advanced: [
+                { noun: 'investment', correctAdjectives: ['profitable', 'long-term', 'international'], wrongAdjectives: ['wooden'] },
+                { noun: 'strategy', correctAdjectives: ['comprehensive', 'innovative', 'digital'], wrongAdjectives: ['red'] },
+                { noun: 'project', correctAdjectives: ['ambitious', 'large-scale', 'collaborative'], wrongAdjectives: ['round'] },
+                { noun: 'solution', correctAdjectives: ['effective', 'simple'], wrongAdjectives: ['wooden'] },
+                { noun: 'approach', correctAdjectives: ['systematic', 'modern'], wrongAdjectives: ['blue'] },
+                { noun: 'partnership', correctAdjectives: ['strategic', 'long-term', 'international'], wrongAdjectives: ['square'] }
+            ]
+        };
+
+        // Generate question with exactly 3 options
+        function generateQuestion() {
+            const scenarioOptions = simpleScenarios[gameState.difficulty];
+            const selectedScenario = scenarioOptions[Math.floor(Math.random() * scenarioOptions.length)];
+            
+            // Create the question with exactly 3 adjectives: 2 correct + 1 wrong
+            const correctAdjs = selectedScenario.correctAdjectives.map((word, index) => ({
+                word: word,
+                category: getCategory(word),
+                order: getCategoryOrder(getCategory(word)),
+                isWrong: false
+            }));
+            
+            const wrongAdj = {
+                word: selectedScenario.wrongAdjectives[0],
+                category: getCategory(selectedScenario.wrongAdjectives[0]),
+                order: getCategoryOrder(getCategory(selectedScenario.wrongAdjectives[0])),
+                isWrong: true
+            };
+
+            return {
+                scenario: {
+                    noun: selectedScenario.noun,
+                    context: getContextForNoun(selectedScenario.noun)
+                },
+                adjectives: [...correctAdjs, wrongAdj].sort(() => 0.5 - Math.random()),
+                correctOrder: correctAdjs.sort((a, b) => a.order - b.order)
+            };
+        }
+
+        // Helper functions to determine category and order
+        function getCategory(word) {
+            const categoryMap = {
+                // Opinion
+                'beautiful': 'opinion', 'nice': 'opinion', 'good': 'opinion', 'comfortable': 'opinion', 
+                'wonderful': 'opinion', 'amazing': 'opinion', 'modern': 'opinion', 'special': 'opinion',
+                'profitable': 'opinion', 'comprehensive': 'opinion', 'ambitious': 'opinion', 'effective': 'opinion',
+                'systematic': 'opinion', 'strategic': 'opinion', 'innovative': 'opinion', 'collaborative': 'opinion',
+                'simple': 'opinion',
+                
+                // Size
+                'small': 'size', 'big': 'size', 'thick': 'size', 'long': 'size', 'tiny': 'size', 
+                'large': 'size', 'fast': 'size', 'large-scale': 'size', 'long-term': 'size',
+                
+                // Age
+                'old': 'age', 'new': 'age',
+                
+                // Shape
+                'round': 'shape', 'square': 'shape',
+                
+                // Color
+                'red': 'color', 'black': 'color', 'silver': 'color', 'golden': 'color', 'blue': 'color',
+                
+                // Origin
+                'Italian': 'origin', 'European': 'origin', 'downtown': 'origin', 'international': 'origin', 'digital': 'origin',
+                
+                // Material
+                'wooden': 'material', 'glass': 'material', 'metal': 'material',
+                
+                // Purpose
+                'sleeping': 'purpose', 'cooking': 'purpose', 'working': 'purpose'
+            };
+            return categoryMap[word] || 'opinion';
+        }
+
+        function getCategoryOrder(category) {
+            const orderMap = {
+                'opinion': 0, 'size': 1, 'age': 2, 'shape': 3, 
+                'color': 4, 'origin': 5, 'material': 6, 'purpose': 7
+            };
+            return orderMap[category] || 0;
+        }
+
+        function getContextForNoun(noun) {
+            const contexts = {
+                'car': 'You\'re describing your dream car to a friend.',
+                'house': 'You\'re telling someone about your childhood home.',
+                'bag': 'You lost your bag and need to describe it to security.',
+                'phone': 'You\'re recommending a phone to your colleague.',
+                'book': 'You\'re describing your favorite book to someone.',
+                'chair': 'You\'re explaining what furniture you need.',
+                'restaurant': 'You\'re writing a review of a memorable restaurant.',
+                'vacation': 'You\'re planning your ideal vacation experience.',
+                'office': 'You\'re describing your perfect work environment.',
+                'apartment': 'You\'re helping a friend find a place to live.',
+                'computer': 'You\'re explaining what equipment you need for work.',
+                'gift': 'You\'re describing a meaningful gift you received.',
+                'investment': 'You\'re presenting a business opportunity to investors.',
+                'strategy': 'You\'re discussing a long-term business strategy.',
+                'project': 'You\'re pitching a creative project to colleagues.',
+                'solution': 'You\'re proposing a solution to a complex problem.',
+                'approach': 'You\'re explaining a new methodology to your team.',
+                'partnership': 'You\'re describing an ideal business partnership.'
+            };
+            return contexts[noun] || 'You\'re describing this to someone.';
+        }
+
+        // Display question
+        function displayQuestion() {
+            gameState.currentQuestion = generateQuestion();
+            gameState.selectedAdjectives = [];
+            
+            const container = document.getElementById('question-container');
+            const { scenario, adjectives: questionAdjectives, correctOrder } = gameState.currentQuestion;
+            
+            container.innerHTML = `
+                <div class="scenario">
+                    <strong>Situation:</strong> ${scenario.context}
+                </div>
+                
+                <div class="question-text">
+                    Choose the correct adjectives and put them in order to describe: <strong>"${scenario.noun}"</strong>
+                </div>
+                
+                <div class="adjective-bank">
+                    <div class="bank-title">Available adjectives (choose ${correctOrder.length}):</div>
+                    <div class="adjective-chips">
+                        ${questionAdjectives.map(adj => 
+                            `<div class="adjective-chip" data-word="${adj.word}" data-category="${adj.category}" data-wrong="${adj.isWrong || false}">
+                                ${adj.word}
+                            </div>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                <div class="sentence-builder" id="sentence-builder">
+                    <span class="sentence-part">A</span>
+                    <span style="color: #999; font-style: italic;">...select adjectives...</span>
+                    <span class="sentence-part">${scenario.noun}</span>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="checkAnswer()" id="checkBtn">Check Answer</button>
+                    <button class="btn btn-secondary" onclick="clearSelection()">Clear</button>
+                    <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="display: none;">➡️ Next Question</button>
+                    <button class="btn btn-secondary" onclick="skipQuestion()" id="skipBtn">⏭️ Skip Question</button>
+                </div>
+                
+                <div id="feedback"></div>
+            `;
+            
+            // Add event listeners to chips
+            document.querySelectorAll('.adjective-chip').forEach(chip => {
+                chip.addEventListener('click', () => selectAdjective(chip));
+            });
+        }
+
+        // Select adjective - allow selecting all 3 for learning
+        function selectAdjective(chip) {
+            if (chip.classList.contains('selected')) {
+                chip.classList.remove('selected');
+                gameState.selectedAdjectives = gameState.selectedAdjectives.filter(adj => adj.word !== chip.dataset.word);
+            } else {
+                chip.classList.add('selected');
+                gameState.selectedAdjectives.push({
+                    word: chip.dataset.word,
+                    category: chip.dataset.category,
+                    order: getCategoryOrder(chip.dataset.category),
+                    isWrong: chip.dataset.wrong === 'true'
+                });
+            }
+            updateSentenceBuilder();
+        }
+
+        // Update sentence builder
+        function updateSentenceBuilder() {
+            const builder = document.getElementById('sentence-builder');
+            const sorted = [...gameState.selectedAdjectives].filter(adj => !adj.isWrong).sort((a, b) => a.order - b.order);
+            
+            if (sorted.length === 0) {
+                builder.innerHTML = `
+                    <span class="sentence-part">A</span>
+                    <span style="color: #999; font-style: italic;">...select adjectives...</span>
+                    <span class="sentence-part">${gameState.currentQuestion.scenario.noun}</span>
+                `;
+            } else {
+                const article = /^[aeiou]/i.test(sorted[0]?.word) ? 'An' : 'A';
+                builder.innerHTML = `
+                    <span class="sentence-part">${article}</span>
+                    ${sorted.map(adj => `<span class="sentence-part adjective">${adj.word}</span>`).join('')}
+                    <span class="sentence-part">${gameState.currentQuestion.scenario.noun}</span>
+                `;
+            }
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const selected = gameState.selectedAdjectives.filter(adj => !adj.isWrong);
+            const correct = gameState.currentQuestion.correctOrder;
+            
+            // Validation - ensure students selected something
+            if (gameState.selectedAdjectives.length === 0) {
+                document.getElementById('feedback').innerHTML = `
+                    <div class="feedback incorrect">
+                        <strong>⚠️ Please select some adjectives first!</strong>
+                    </div>
+                `;
+                return;
+            }
+            
+            const feedback = document.getElementById('feedback');
+            const checkBtn = document.getElementById('checkBtn');
+            
+            // Check if correct adjectives selected and in right order
+            const hasCorrectAdjectives = selected.length === correct.length && 
+                                       selected.every(sel => correct.some(cor => cor.word === sel.word));
+            
+            const sortedSelected = [...selected].sort((a, b) => a.order - b.order);
+            const isCorrectOrder = sortedSelected.every((sel, i) => sel.word === correct[i].word);
+            
+            const hasWrongAdjectives = gameState.selectedAdjectives.some(adj => adj.isWrong);
+            
+            if (hasCorrectAdjectives && isCorrectOrder && !hasWrongAdjectives) {
+                gameState.score++;
+                const article = /^[aeiou]/i.test(sortedSelected[0]?.word) ? 'An' : 'A';
+                feedback.innerHTML = `
+                    <div class="feedback correct">
+                        <strong>✅ Perfect!</strong> You got the adjective order right!
+                        <br><strong>Your sentence:</strong> "${article} ${sortedSelected.map(adj => adj.word).join(' ')} ${gameState.currentQuestion.scenario.noun}"
+                    </div>
+                    <div class="discussion-prompt">
+                        <h4>💭 Let's Talk:</h4>
+                        <p>Describe a ${gameState.currentQuestion.scenario.noun} that's important to you using 2-3 adjectives. What makes it special?</p>
+                    </div>
+                `;
+                showNextButton();
+            } else {
+                let errorMsg = '';
+                if (hasWrongAdjectives) {
+                    errorMsg = 'You selected adjectives that don\'t fit this sentence.';
+                } else if (!hasCorrectAdjectives) {
+                    errorMsg = 'You didn\'t select all the correct adjectives.';
+                } else {
+                    errorMsg = 'The adjectives are in the wrong order.';
+                }
+                
+                const correctArticle = /^[aeiou]/i.test(correct[0]?.word) ? 'An' : 'A';
+                feedback.innerHTML = `
+                    <div class="feedback incorrect">
+                        <strong>❌ ${errorMsg}</strong> 
+                        <br><strong>Correct order:</strong> "${correctArticle} ${correct.map(adj => adj.word).join(' ')} ${gameState.currentQuestion.scenario.noun}"
+                        <br><strong>Remember:</strong> ${correct.map(adj => `${adj.word} (${adj.category})`).join(' → ')}
+                    </div>
+                `;
+                showRetryButton();
+            }
+        }
+
+        function showRetryButton() {
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const skipBtn = document.getElementById('skipBtn');
+            
+            checkBtn.innerHTML = '🔄 Try Again';
+            checkBtn.onclick = () => {
+                clearSelection();
+                document.getElementById('feedback').innerHTML = '';
+            };
+            nextBtn.style.display = 'none';
+            skipBtn.style.display = 'inline-block';
+        }
+
+        function showNextButton() {
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const skipBtn = document.getElementById('skipBtn');
+            
+            checkBtn.style.display = 'none';
+            skipBtn.style.display = 'none';
+            
+            if (gameState.current >= gameState.total) {
+                nextBtn.innerHTML = '🏁 See Final Score';
+                nextBtn.onclick = showFinalScore;
+            } else {
+                nextBtn.innerHTML = '➡️ Next Question';
+                nextBtn.onclick = () => {
+                    nextQuestion();
+                    checkBtn.style.display = 'inline-block';
+                    checkBtn.innerHTML = 'Check Answer';
+                    checkBtn.onclick = checkAnswer;
+                    nextBtn.style.display = 'none';
+                    skipBtn.style.display = 'inline-block';
+                };
+            }
+            nextBtn.style.display = 'inline-block';
+        }
+
+        // Skip question without affecting score
+        function skipQuestion() {
+            if (gameState.current >= gameState.total) {
+                showFinalScore();
+            } else {
+                nextQuestion();
+                
+                // Reset buttons
+                const checkBtn = document.getElementById('checkBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const skipBtn = document.getElementById('skipBtn');
+                
+                checkBtn.style.display = 'inline-block';
+                checkBtn.innerHTML = 'Check Answer';
+                checkBtn.onclick = checkAnswer;
+                nextBtn.style.display = 'none';
+                skipBtn.style.display = 'inline-block';
+            }
+        }
+
+        // Clear selection
+        function clearSelection() {
+            gameState.selectedAdjectives = [];
+            document.querySelectorAll('.adjective-chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+            updateSentenceBuilder();
+            
+            // Reset check button if it was changed
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const skipBtn = document.getElementById('skipBtn');
+            if (checkBtn.innerHTML !== 'Check Answer') {
+                checkBtn.innerHTML = 'Check Answer';
+                checkBtn.onclick = checkAnswer;
+                checkBtn.style.display = 'inline-block';
+                if (nextBtn) nextBtn.style.display = 'none';
+                if (skipBtn) skipBtn.style.display = 'inline-block';
+            }
+        }
+
+        // Next question
+        function nextQuestion() {
+            gameState.current++;
+            updateDisplay();
+            displayQuestion();
+            document.getElementById('feedback').innerHTML = '';
+            saveProgress();
+        }
+
+        // Show final score
+        function showFinalScore() {
+            const container = document.getElementById('question-container');
+            const percentage = Math.round((gameState.score / gameState.total) * 100);
+            
+            container.innerHTML = `
+                <div style="text-align: center; padding: 30px;">
+                    <h2>🎉 Game Complete!</h2>
+                    <div style="font-size: 3em; margin: 20px 0;">${percentage}%</div>
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        You got ${gameState.score} out of ${gameState.total} correct!
+                    </p>
+                    <div class="discussion-prompt">
+                        <h4>🗣️ Final Challenge:</h4>
+                        <p>Think of your favorite place to visit. Describe it using at least 4 adjectives in the correct order. Share your description with a partner and explain why this place is special to you.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="resetGame()" style="margin-top: 20px;">Play Again</button>
+                </div>
+            `;
+            
+            // Clear saved progress
+            localStorage.removeItem('adjectiveGameProgress');
+        }
+
+        // Reset game
+        function resetGame() {
+            gameState.score = 0;
+            gameState.current = 1;
+            gameState.selectedAdjectives = [];
+            updateDisplay();
+            displayQuestion();
+            
+            // Reset button to initial state
+            const checkBtn = document.getElementById('checkBtn');
+            if (checkBtn) {
+                checkBtn.innerHTML = 'Check Answer';
+                checkBtn.onclick = checkAnswer;
+            }
+        }
+
+        // Update display
+        function updateDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('current').textContent = gameState.current;
+            document.getElementById('progress').style.width = `${(gameState.current - 1) / gameState.total * 100}%`;
+        }
+
+        // Initialize difficulty selector
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                gameState.difficulty = btn.dataset.level;
+                if (gameState.current === 1 && document.getElementById('feedback').innerHTML === '') {
+                    displayQuestion();
+                }
+            });
+        });
+
+        // Toggle guide visibility
+        function toggleGuide() {
+            const guide = document.getElementById('orderGuide');
+            const content = document.getElementById('guideContent');
+            const toggle = document.querySelector('.guide-toggle');
+            
+            if (guide.classList.contains('collapsed')) {
+                guide.classList.remove('collapsed');
+                content.style.display = 'block';
+                toggle.textContent = '−';
+            } else {
+                guide.classList.add('collapsed');
+                content.style.display = 'none';
+                toggle.textContent = '+';
+            }
+        }
+
+        // Initialize game
+        loadProgress();
+        displayQuestion();
+    </script>
+</body>
+</html>

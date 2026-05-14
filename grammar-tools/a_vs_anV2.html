@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A vs An Practice Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .game-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .rule-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .rule-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        .rule-content {
+            font-size: 16px;
+            color: #856404;
+        }
+        .rule-highlight {
+            font-weight: bold;
+            color: #d39e00;
+        }
+        .score {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .word-display {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #34495e;
+            margin: 40px 0;
+            min-height: 60px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .btn {
+            padding: 15px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-a {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-an {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        .feedback {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        .correct {
+            color: #27ae60;
+        }
+        .incorrect {
+            color: #e74c3c;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .next-btn {
+            background-color: #f39c12;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        .next-btn:hover {
+            background-color: #d68910;
+        }
+        .reset-btn {
+            background-color: #95a5a6;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        .reset-btn:hover {
+            background-color: #7f8c8d;
+        }
+        .progress {
+            text-align: center;
+            margin: 20px 0;
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎯 A vs An Practice Game</h1>
+        
+        <div class="rule-box">
+            <div class="rule-title">The Rule</div>
+            <div class="rule-content">
+                Listen to the <span class="rule-highlight">sound</span>, not the spelling!<br>
+                <span class="rule-highlight">A</span> = consonant sound | <span class="rule-highlight">An</span> = vowel sound
+            </div>
+        </div>
+        
+        <div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+        <div class="progress">Word <span id="current">1</span> of <span id="totalWords">49</span></div>
+        
+        <div class="word-display" id="currentWord">Click "Next Word" to start!</div>
+        
+        <div class="buttons">
+            <button class="btn btn-a" onclick="checkAnswer('a')">A</button>
+            <button class="btn btn-an" onclick="checkAnswer('an')">AN</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="controls">
+            <button class="next-btn" onclick="nextWord()">Next Word</button>
+            <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        const words = [
+            {word: "elephant", article: "an"},
+            {word: "university", article: "a"},
+            {word: "honest", article: "an"},
+            {word: "book", article: "a"},
+            {word: "ice cream", article: "an"},
+            {word: "uniform", article: "a"},
+            {word: "teacher", article: "a"},
+            {word: "hour", article: "an"},
+            {word: "orange", article: "an"},
+            {word: "European", article: "a"},
+            {word: "accident", article: "an"},
+            {word: "cat", article: "a"},
+            {word: "unique", article: "a"},
+            {word: "office", article: "an"},
+            {word: "phone", article: "a"},
+            {word: "herb", article: "an"},
+            {word: "airplane", article: "an"},
+            {word: "one-way", article: "a"},
+            {word: "student", article: "a"},
+            {word: "umbrella", article: "an"},
+            {word: "artist", article: "an"},
+            {word: "united", article: "a"},
+            {word: "dog", article: "a"},
+            {word: "honor", article: "an"},
+            {word: "interview", article: "an"},
+            {word: "usual", article: "a"},
+            {word: "chair", article: "a"},
+            {word: "apple", article: "an"},
+            {word: "engineer", article: "an"},
+            {word: "computer", article: "a"},
+            {word: "one-time", article: "a"},
+            {word: "friend", article: "a"},
+            {word: "internet", article: "an"},
+            {word: "user", article: "a"},
+            {word: "table", article: "a"},
+            {word: "egg", article: "an"},
+            {word: "house", article: "a"},
+            {word: "unicorn", article: "a"},
+            {word: "island", article: "an"},
+            {word: "pen", article: "a"},
+            {word: "actor", article: "an"},
+            {word: "one-dollar", article: "a"},
+            {word: "window", article: "a"},
+            {word: "invitation", article: "an"},
+            {word: "unit", article: "a"},
+            {word: "answer", article: "an"},
+            {word: "door", article: "a"},
+            {word: "idea", article: "an"},
+            {word: "animal", article: "an"}
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+        let shuffledWords = [...words];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function updateDisplay() {
+            document.getElementById('currentWord').textContent = shuffledWords[currentIndex].word;
+            document.getElementById('current').textContent = currentIndex + 1;
+            document.getElementById('totalWords').textContent = shuffledWords.length;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex;
+            document.getElementById('feedback').textContent = '';
+            answered = false;
+        }
+
+        function checkAnswer(selectedArticle) {
+            if (answered) return;
+            
+            const correctArticle = shuffledWords[currentIndex].article;
+            const feedbackDiv = document.getElementById('feedback');
+            
+            if (selectedArticle === correctArticle) {
+                score++;
+                feedbackDiv.textContent = '✅ Correct!';
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                feedbackDiv.textContent = `❌ Wrong! It's "${correctArticle} ${shuffledWords[currentIndex].word}"`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+            
+            answered = true;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex + 1;
+        }
+
+        function nextWord() {
+            if (currentIndex < shuffledWords.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            } else {
+                document.getElementById('currentWord').textContent = 'Game Complete!';
+                document.getElementById('feedback').textContent = `Final Score: ${score}/${shuffledWords.length}`;
+                document.getElementById('feedback').className = 'feedback';
+            }
+        }
+
+        function resetGame() {
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            shuffledWords = shuffleArray([...words]);
+            updateDisplay();
+        }
+
+        shuffledWords = shuffleArray([...words]);
+        updateDisplay();
+    </script>
+</body>
+</html>

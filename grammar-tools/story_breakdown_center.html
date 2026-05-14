@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comic Reading Teaching Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            line-height: 1.4;
+            background: #2c3e50;
+            height: 100vh;
+            overflow: hidden;
+            color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 70vw;
+            max-width: 900px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tabs {
+            display: flex;
+            background: #1e2a38;
+            border-bottom: 3px solid #34495e;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: #2f3e4f;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 1px solid #1e2a38;
+            color: #f1f1f1;
+        }
+
+        .tab:last-child { border-right: none; }
+
+        .tab.active {
+            background: #3498db;
+            color: #fff;
+            border-bottom: 3px solid #2980b9;
+            margin-bottom: -3px;
+        }
+
+        .tab:not(.active):hover { background: #45586d; }
+
+        .content-area {
+            flex: 1;
+            background: #ffffff;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card { display: none; height: 100%; }
+        .card.active { display: block; }
+
+        .tense-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            height: 100%;
+        }
+
+        .tense-column {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 24px;
+            border-top: 4px solid;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .tense-column.past { border-top-color: #e74c3c; }
+        .tense-column.present { border-top-color: #3498db; }
+        .tense-column.future { border-top-color: #27ae60; }
+
+        .tense-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; text-align: center; }
+        .tense-question { font-size: 1.3rem; font-weight: 600; margin-bottom: 10px; }
+        .hint { font-style: italic; color: #555; font-size: 1.05rem; margin-bottom: 16px; }
+
+        .practice-section,
+        .examples-section {
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            font-size: 1.15rem;
+        }
+
+        .practice-section {
+            background: #e8f4fb; /* soft blue */
+            border-left: 4px solid #3498db;
+        }
+
+        .examples-section {
+            background: #eaf9ef; /* soft green */
+            border-left: 4px solid #28a745;
+        }
+
+        .section-label { font-weight: 600; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+        .large-card {
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 12px;
+            border-top: 3px solid #3498db;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 12px; text-align: center; color: #1e2a38; }
+        .question-block { background: white; padding: 10px; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); font-size: 0.9rem; }
+        .question-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+
+        .emotions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+        .emotion-group { background: white; border-radius: 6px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .emotion-group h3 { margin-bottom: 8px; text-align: center; font-size: 1rem; background: #f1f3f5; padding: 6px; border-radius: 4px; }
+
+        .emotion-item { margin-bottom: 6px; padding: 6px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #e74c3c; font-size: 0.85rem; }
+        .emotion-name { font-weight: 600; }
+        .emotion-description { font-size: 0.8rem; color: #555; margin-top: 2px; }
+
+        .genre-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+        .genre-tag { background: #27ae60; color: white; padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .genre-tag:hover { background: #229954; transform: translateY(-2px); }
+
+        .writing-space {
+            height: 120px;
+            background: #1e2a38;
+            border-top: 3px solid #3498db;
+            padding: 10px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+        }
+
+        .writing-area {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #34495e;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 0.9rem;
+            resize: none;
+            outline: none;
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .writing-area:focus {
+            border-color: #3498db;
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .tense-card { grid-template-columns: 1fr; gap: 20px; }
+            .emotions-grid { grid-template-columns: 1fr; }
+            .genre-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showCard('tenses')">Tenses</button>
+            <button class="tab" onclick="showCard('concept')">Concept</button>
+            <button class="tab" onclick="showCard('manner')">Manner</button>
+            <button class="tab" onclick="showCard('emotions')">Emotions</button>
+            <button class="tab" onclick="showCard('genre')">Genre</button>
+        </div>
+
+        <div class="content-area">
+            <!-- Tenses Card -->
+            <div class="card active" id="tenses">
+                <div class="tense-card">
+                    <div class="tense-column past">
+                        <div class="tense-title">PAST</div>
+                        <div class="tense-question">What happened?</div>
+                        <div class="hint">(Answer in past tense)</div>
+                        
+                        <div class="practice-section">
+                            <div class="section-label">Practice</div>
+                            <div>"Earlier, she ______"</div>
+                            <div>"As I remember, he ______"</div>
+                        </div>
+                        
+                        <div class="examples-section">
+                            <div class="section-label">Examples</div>
+                            <div>"Earlier, she walked."</div>
+                            <div>"As I remember he was buying pizza"</div>
+                        </div>
+                    </div>
+
+                    <div class="tense-column present">
+                        <div class="tense-title">PRESENT</div>
+                        <div class="tense-question">What is happening?</div>
+                        <div class="hint">(Describe what you see now)</div>
+                        
+                        <div class="practice-section">
+                            <div class="section-label">Practice</div>
+                            <div>"Right now, she is ______"</div>
+                            <div>"At this moment, he is ______"</div>
+                        </div>
+                        
+                        <div class="examples-section">
+                            <div class="section-label">Examples</div>
+                            <div>she is running</div>
+                            <div>looking at the pig</div>
+                            <div>sitting down</div>
+                        </div>
+                    </div>
+
+                    <div class="tense-column future">
+                        <div class="tense-title">FUTURE</div>
+                        <div class="tense-question">What's going to happen?</div>
+                        <div class="hint">(Answer in future tense)</div>
+                        
+                        <div class="practice-section">
+                            <div class="section-label">Practice</div>
+                            <div>"Next, she will ______"</div>
+                            <div>"I think he will ______"</div>
+                        </div>
+                        
+                        <div class="examples-section">
+                            <div class="section-label">Examples</div>
+                            <div>escape</div>
+                            <div>find something</div>
+                            <div>get caught</div>
+                            <div>eat pizza</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Concept Card -->
+            <div class="card" id="concept">
+                <div class="large-card">
+                    <div class="card-title">The Concept</div>
+                    <div class="question-block">
+                        <div class="question-title">What do we call this action?</div>
+                        <div class="hint">(Usually ends in -tion, -ing, -ment)</div>
+                        
+                        <div class="practice-section">
+                            <div class="section-label">Practice</div>
+                            <div>"The ______" / "An ______" / "A ______"</div>
+                        </div>
+                        
+                        <div class="examples-section">
+                            <div class="section-label">Examples</div>
+                            <div>the running, an escape, a transformation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manner Card -->
+            <div class="card" id="manner">
+                <div class="large-card">
+                    <div class="card-title">Manner</div>
+                    <div class="question-block">
+                        <div class="question-title">How are they doing it?</div>
+                        <div class="hint">(Use adverbs - words ending in -ly or describing HOW)</div>
+                        
+                        <div class="practice-section">
+                            <div class="section-label">Practice</div>
+                            <div>"She is ______ running"</div>
+                            <div>"He ______ opened the door"</div>
+                        </div>
+                        
+                        <div class="examples-section">
+                            <div class="section-label">Examples</div>
+                            <div>frantically, quietly, desperately, slowly, carefully</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emotions Card -->
+            <div class="card" id="emotions">
+                <div class="large-card">
+                    <div class="card-title">Inner Feelings vs Outer Appearance</div>
+                    
+                    <div class="question-block">
+                        <div class="question-title">Inner feelings: What does the character feel inside?</div>
+                        <div class="practice-section">
+                            <div class="section-label">Practice</div>
+                            <div>"She feels ______" / "He is feeling ______"</div>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">Outer appearance: What does the character show outside?</div>
+                        <div class="practice-section">
+                            <div class="section-label">Practice</div>
+                            <div>"She looks ______" / "He appears ______"</div>
+                        </div>
+                        <div class="examples-section">
+                            <div class="section-label">Examples</div>
+                            <div>nervous, calm, angry, tired, excited</div>
+                        </div>
+                    </div>
+
+                    <div class="emotions-grid">
+                        <div class="emotion-group">
+                            <h3>Most Common</h3>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Happy</div>
+                                <div class="emotion-description">When you smile and feel good inside</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Sad</div>
+                                <div class="emotion-description">When you want to cry or feel down</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Angry</div>
+                                <div class="emotion-description">When you're mad and want to yell</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Scared</div>
+                                <div class="emotion-description">Your heart beats fast, you want to hide</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Surprised</div>
+                                <div class="emotion-description">Something unexpected happened</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Worried</div>
+                                <div class="emotion-description">You think something bad will happen</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Confused</div>
+                                <div class="emotion-description">When you don't understand what's happening</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Excited</div>
+                                <div class="emotion-description">When you can't wait for something good</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Tired</div>
+                                <div class="emotion-description">When you want to sleep or rest</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Bored</div>
+                                <div class="emotion-description">When nothing seems fun or interesting</div>
+                            </div>
+                        </div>
+
+                        <div class="emotion-group">
+                            <h3>Less Common</h3>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Disgusted</div>
+                                <div class="emotion-description">Makes you say "eww, gross!"</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Proud</div>
+                                <div class="emotion-description">When you feel good about something you did</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Embarrassed</div>
+                                <div class="emotion-description">When your face gets red from awkwardness</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Jealous</div>
+                                <div class="emotion-description">When you want what someone else has</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Guilty</div>
+                                <div class="emotion-description">When you feel bad about doing something wrong</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Curious</div>
+                                <div class="emotion-description">When you really want to know more</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Relieved</div>
+                                <div class="emotion-description">When something scary or worrying stops</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Frustrated</div>
+                                <div class="emotion-description">When you're stuck and can't do what you want</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Suspicious</div>
+                                <div class="emotion-description">When you think someone is hiding something</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Amazed</div>
+                                <div class="emotion-description">When something is so cool it blows your mind</div>
+                            </div>
+                            <div class="emotion-item">
+                                <div class="emotion-name">Annoyed</div>
+                                <div class="emotion-description">When something bothers you and makes you a little angry</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Genre Card -->
+            <div class="card" id="genre">
+                <div class="large-card">
+                    <div class="card-title">Genre</div>
+                    <div class="question-block">
+                        <div class="question-title">What's the story about?</div>
+                        <div class="hint">(Choose one or more)</div>
+                        
+                        <div class="genre-grid">
+                            <div class="genre-tag">Horror</div>
+                            <div class="genre-tag">Comedy</div>
+                            <div class="genre-tag">Romance</div>
+                            <div class="genre-tag">Adventure</div>
+                            <div class="genre-tag">Mystery</div>
+                            <div class="genre-tag">Drama</div>
+                            <div class="genre-tag">Fantasy</div>
+                            <div class="genre-tag">Thriller</div>
+                            <div class="genre-tag">Slice of Life</div>
+                            <div class="genre-tag">Action</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="writing-space">
+            <textarea class="writing-area" placeholder="Write notes, examples, or anything you want here..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        function showCard(cardId) {
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(cardId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

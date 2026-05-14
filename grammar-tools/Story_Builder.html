@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Story Builder — Teaching Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --intro:#d6ecff;
+  --climax:#ffe3c2;
+  --ending:#d4f8d4;
+  --panel:#ffffff;
+  --shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+html,body {
+  margin:0;
+  height:100%;
+  font-family:'Quicksand', sans-serif;
+  background:linear-gradient(180deg,#fffaf3,#f3f9ff);
+}
+.app {
+  display:flex;
+  height:100%;
+  gap:16px;
+  padding:16px;
+  box-sizing:border-box;
+}
+.panel {
+  background:var(--panel);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:16px;
+  overflow:auto;
+}
+.left {
+  width:240px;
+  flex:0 0 240px;
+  position:fixed;
+  left:16px;
+  top:16px;
+  height:calc(100vh - 32px);
+  overflow-y:auto;
+}
+.center {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin-left:272px;
+}
+h2 {margin:0 0 12px;font-size:17px;font-weight:600;}
+.pos-item {
+  display:flex;gap:8px;align-items:flex-start;
+  background:#fff;
+  border-radius:10px;
+  padding:8px;
+  font-size:14px;
+  margin-bottom:8px;
+}
+.icon {font-size:18px;}
+.example {font-size:12px;color:#555;margin-top:4px;}
+.section {
+  display:flex;gap:12px;
+  border-radius:12px;
+  padding:12px;
+}
+textarea {
+  flex:1;
+  border:none;
+  border-radius:10px;
+  padding:10px;
+  font-size:14px;
+  resize:vertical;
+  min-height:100px;
+}
+.checklist {
+  width:180px;flex-shrink:0;
+  display:flex;flex-direction:column;gap:6px;
+  font-size:13px;
+}
+.checklist label {
+  background:rgba(255,255,255,0.7);
+  border-radius:8px;
+  padding:4px 6px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.checklist input[type=checkbox]:checked + span {
+  background:#c2f0c2;
+  border-radius:4px;
+  padding:2px 4px;
+}
+.phrases {
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;
+}
+.phrase {
+  background:#f0f4ff;
+  border:none;
+  padding:6px 10px;
+  border-radius:20px;
+  cursor:pointer;
+  font-size:13px;
+  transition:background-color 0.2s;
+}
+.phrase:hover {
+  background:#e0e8ff;
+}
+.toolbar {display:flex;gap:8px;align-items:center;}
+.btn {
+  background:#f0f4ff;
+  border:none;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+  transition:background-color 0.2s;
+}
+.btn:hover {
+  background:#e0e8ff;
+}
+.btn.primary {background:#5b72f2;color:white;}
+.btn.primary:hover {background:#4a61e1;}
+footer {
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;color:#555;margin-top:8px;
+}
+.sentence-frames {
+  background-color: #f9f9f9;
+  border: 1px dashed #bbb;
+  padding: 6px;
+  margin-top: 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.sentence-frames ul {
+  margin: 4px 0 0 18px;
+  padding: 0;
+}
+.sentence-frames li {
+  margin-bottom: 4px;
+}
+
+@media (max-width:900px) {
+  .app {flex-direction:column;padding:8px;}
+  .left {
+    position:relative;
+    width:100%;
+    height:auto;
+    margin-left:0;
+    order:-1;
+  }
+  .center {margin-left:0;}
+  .section {flex-direction:column;}
+  .checklist {width:100%;margin-top:8px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="panel left">
+    <h2>📚 Parts of Speech</h2>
+    <div class="pos-item">
+      <div class="icon">📘</div>
+      <div>
+        <strong>Noun</strong> — person, place, thing.
+        <div class="example">dog, park, teacher, city, book, ocean, friend, school</div>
+      </div>
+    </div>
+    <div class="pos-item">
+      <div class="icon">🃏</div>
+      <div>
+        <strong>Verb</strong> — action/state.
+        <div class="example">run, is, jump, think, sleep, sing, laugh, create</div>
+      </div>
+    </div>
+    <div class="pos-item">
+      <div class="icon">🎨</div>
+      <div>
+        <strong>Adjective</strong> — describes noun.
+        <div class="example">big, happy, red, scary, funny, ancient, brave, tiny</div>
+      </div>
+    </div>
+    <div class="pos-item">
+      <div class="icon">⚡</div>
+      <div>
+        <strong>Adverb</strong> — modifies verb.
+        <div class="example">quickly, well, carefully, loudly, never, always, here</div>
+      </div>
+    </div>
+    <div class="pos-item">
+      <div class="icon">🙋</div>
+      <div>
+        <strong>Pronoun</strong> — replaces nouns.
+        <div class="example">he, it, she, they, we, you, this, that</div>
+      </div>
+    </div>
+    <div class="pos-item">
+      <div class="icon">➕</div>
+      <div>
+        <strong>Conjunction</strong> — joins ideas.
+        <div class="example">and, because, but, or, so, when, if, although</div>
+      </div>
+    </div>
+    <div class="pos-item">
+      <div class="icon">📍</div>
+      <div>
+        <strong>Preposition</strong> — relation.
+        <div class="example">in, at, on, under, over, through, beside, during</div>
+      </div>
+    </div>
+    <div class="pos-item">
+      <div class="icon">🅰️</div>
+      <div>
+        <strong>Article</strong> — a, an, the.
+      </div>
+    </div>
+  </aside>
+
+  <div class="center">
+    <div class="toolbar">
+      <button class="btn primary" id="clear-all">Clear</button>
+      <button class="btn" id="example-btn">Load Example</button>
+      <div style="flex:1"></div>
+      <button class="btn" id="save-html">Download HTML</button>
+      <button class="btn" id="save-txt">Export TXT</button>
+    </div>
+
+    <div class="section" style="background:var(--intro)">
+      <textarea id="intro" placeholder="📖 Introduction..."></textarea>
+      <div class="checklist">
+        <strong>Intro checklist</strong>
+        <label><input type="checkbox"><span>Who is in the story?</span></label>
+        <label><input type="checkbox"><span>Where is it happening?</span></label>
+        <label><input type="checkbox"><span>When is it happening?</span></label>
+        <div class="phrases">
+          <button class="phrase">One day</button>
+          <button class="phrase">It all started when</button>
+          <button class="phrase">A long time ago</button>
+          <button class="phrase">Early that morning</button>
+          <button class="phrase">In a small town</button>
+          <button class="phrase">On a cold winter day</button>
+          <button class="phrase">It was a sunny afternoon</button>
+          <button class="phrase">Long before now</button>
+          <div class="sentence-frames">
+            <strong>Sentence Frames:</strong>
+            <ul>
+              <li>One day, [subject] [verb] [object].</li>
+              <li>A long time ago, [subject] [verb] in [place].</li>
+              <li>Early that morning, [subject] was [verb+ing] [object].</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="background:var(--climax)">
+      <textarea id="climax" placeholder="⚡ Climax..."></textarea>
+      <div class="checklist">
+        <strong>Climax checklist</strong>
+        <label><input type="checkbox"><span>Problem or exciting event</span></label>
+        <label><input type="checkbox"><span>Use a surprise phrase</span></label>
+        <div class="phrases">
+          <button class="phrase">Suddenly</button>
+          <button class="phrase">Out of nowhere</button>
+          <button class="phrase">Without warning</button>
+          <button class="phrase">All of a sudden</button>
+          <button class="phrase">At that moment</button>
+          <button class="phrase">To everyone's surprise</button>
+          <button class="phrase">Just then</button>
+          <button class="phrase">Before she knew it</button>
+          <div class="sentence-frames">
+            <strong>Sentence Frames:</strong>
+            <ul>
+              <li>Suddenly, [subject] [verb] [details].</li>
+              <li>Out of nowhere, [subject] [verb] [object].</li>
+              <li>Without warning, [subject] [verb] because [reason].</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="background:var(--ending)">
+      <textarea id="ending" placeholder="🎯 Ending..."></textarea>
+      <div class="checklist">
+        <strong>Ending checklist</strong>
+        <label><input type="checkbox"><span>Problem solved</span></label>
+        <label><input type="checkbox"><span>Final feeling or lesson</span></label>
+        <div class="phrases">
+          <button class="phrase">Finally</button>
+          <button class="phrase">In the end</button>
+          <button class="phrase">At last</button>
+          <button class="phrase">Eventually</button>
+          <button class="phrase">Afterwards</button>
+          <button class="phrase">When it was over</button>
+          <button class="phrase">In the end it turned out</button>
+          <button class="phrase">Looking back</button>
+          <div class="sentence-frames">
+            <strong>Sentence Frames:</strong>
+            <ul>
+              <li>Finally, [subject] [verb] [result].</li>
+              <li>In the end, [subject] learned that [lesson].</li>
+              <li>After that, [subject] [verb] and [result].</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div id="word-count">Words: 0</div>
+      <div id="char-count">Characters: 0</div>
+    </footer>
+  </div>
+</div>
+
+<script>
+const getStoryText = () => {
+  return [
+    document.getElementById('intro').value,
+    document.getElementById('climax').value,
+    document.getElementById('ending').value
+  ].filter(text => text.trim()).join('\n\n');
+};
+
+const updateWordCount = () => {
+  const text = getStoryText().trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  document.getElementById('word-count').textContent = `Words: ${words}`;
+};
+
+const saveToStorage = (id, value) => {
+  try {
+    // Use variables instead since localStorage isn't available
+    window.storyData = window.storyData || {};
+    window.storyData[id] = value;
+  } catch (e) {
+    // Silently fail if storage unavailable
+  }
+};
+
+const loadFromStorage = (id) => {
+  try {
+    return window.storyData?.[id] || '';
+  } catch (e) {
+    return '';
+  }
+};
+
+// Initialize textareas
+['intro', 'climax', 'ending'].forEach(id => {
+  const el = document.getElementById(id);
+  el.value = loadFromStorage(`story_${id}`);
+  
+  el.addEventListener('input', () => {
+    saveToStorage(`story_${id}`, el.value);
+    updateWordCount();
+  });
+});
+
+updateWordCount();
+
+// Clear all button
+document.getElementById('clear-all').addEventListener('click', () => {
+  if (confirm('Clear entire story?')) {
+    ['intro', 'climax', 'ending'].forEach(id => {
+      const el = document.getElementById(id);
+      el.value = '';
+      saveToStorage(`story_${id}`, '');
+    });
+    updateWordCount();
+  }
+});
+
+// Phrase insertion
+document.querySelectorAll('.phrase').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const textarea = btn.closest('.section').querySelector('textarea');
+    const needsSpace = textarea.value && !textarea.value.endsWith(' ');
+    textarea.value += (needsSpace ? ' ' : '') + btn.textContent;
+    textarea.dispatchEvent(new Event('input'));
+    textarea.focus();
+  });
+  
+  // Keyboard support
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      btn.click();
+    }
+  });
+  
+  btn.setAttribute('tabindex', '0');
+  btn.setAttribute('role', 'button');
+  btn.setAttribute('aria-label', `Insert phrase: ${btn.textContent}`);
+});
+
+// Export functions
+const downloadFile = (content, filename, type) => {
+  try {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    alert('Error downloading file. Please try again.');
+    console.error('Download error:', error);
+  }
+};
+
+document.getElementById('save-txt').addEventListener('click', () => {
+  const story = getStoryText();
+  if (!story.trim()) {
+    alert('Please write some story content first!');
+    return;
+  }
+  downloadFile(story, 'my-story.txt', 'text/plain');
+});
+
+document.getElementById('save-html').addEventListener('click', () => {
+  const story = getStoryText();
+  if (!story.trim()) {
+    alert('Please write some story content first!');
+    return;
+  }
+  const html = `<!doctype html>
+<html>
+<head>
+  <title>My Story</title>
+  <style>body{font-family:Arial;max-width:600px;margin:40px auto;padding:20px;line-height:1.6}</style>
+</head>
+<body>
+  <h1>My Story</h1>
+  <pre style="white-space:pre-wrap;font-family:inherit">${story.replace(/</g, '&lt;')}</pre>
+</body>
+</html>`;
+  downloadFile(html, 'my-story.html', 'text/html');
+});
+
+// Load example
+document.getElementById('example-btn').addEventListener('click', () => {
+  const examples = {
+    intro: 'One day, Maria was walking through the ancient forest near her grandmother\'s house.',
+    climax: 'Suddenly, she heard a mysterious voice calling her name from behind the old oak tree.',
+    ending: 'Finally, she discovered it was just her little brother playing a prank on her with a megaphone.'
+  };
+  
+  Object.entries(examples).forEach(([id, text]) => {
+    const el = document.getElementById(id);
+    el.value = text;
+    saveToStorage(`story_${id}`, text);
+  });
+  
+  updateWordCount();
+});
+</script>
+</body>
+</html>

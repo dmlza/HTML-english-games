@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noun vs Verb Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .rules {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: #495057;
+        }
+        .rule-example {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .word-highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .score {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .sentence-display {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 30px 0;
+            min-height: 80px;
+            line-height: 1.5;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border: 3px dashed #6c757d;
+        }
+        .target-word {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            margin: 0 8px;
+            display: inline-block;
+            font-size: 28px;
+            text-transform: uppercase;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        .btn {
+            padding: 20px 50px;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            min-width: 150px;
+        }
+        .btn-noun {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        .btn-verb {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .feedback {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin: 25px 0;
+            min-height: 60px;
+        }
+        .correct {
+            color: #27ae60;
+        }
+        .incorrect {
+            color: #e74c3c;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .control-btn {
+            background: linear-gradient(45deg, #636e72, #2d3436);
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        .control-btn:hover {
+            background: linear-gradient(45deg, #2d3436, #000);
+            transform: translateY(-3px);
+        }
+        .progress {
+            text-align: center;
+            margin: 20px 0;
+            color: #6c757d;
+            font-size: 18px;
+        }
+        .category {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 15px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎯 Noun vs Verb Game</h1>
+        
+        <div class="rules">
+            <h3>📖 Same Word, Different Function!</h3>
+            <div class="rule-example">
+                <strong>NOUN (thing/person/place):</strong> "I went for a morning <span class="word-highlight">run</span>" 
+                <em>(run = the activity)</em>
+            </div>
+            <div class="rule-example">
+                <strong>VERB (action):</strong> "I <span class="word-highlight">run</span> to school every day" 
+                <em>(run = doing the action)</em>
+            </div>
+            <p><strong>Tip:</strong> Look at HOW the word is used in the sentence!</p>
+        </div>
+        
+        <div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+        <div class="progress">Question <span id="current">1</span> of <span id="totalQuestions">30</span></div>
+        
+        <div class="category" id="category">Click "Next Question" to start!</div>
+        
+        <div class="sentence-display" id="sentence">Ready to identify word functions?</div>
+        
+        <div class="buttons">
+            <button class="btn btn-noun" onclick="checkAnswer('noun')">NOUN<br><small>(Thing/Person/Place)</small></button>
+            <button class="btn btn-verb" onclick="checkAnswer('verb')">VERB<br><small>(Action/Doing)</small></button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="nextQuestion()">Next Question</button>
+            <button class="control-btn" onclick="resetGame()">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // RUN
+            {sentence: "I went for a morning ___", word: "run", answer: "noun", category: "RUN", explanation: "The morning run = the activity/thing"},
+            {sentence: "Dogs ___ very fast", word: "run", answer: "verb", category: "RUN", explanation: "Dogs run = action they do"},
+            
+            // WALK
+            {sentence: "Let's take a ___ in the park", word: "walk", answer: "noun", category: "WALK", explanation: "A walk = the activity/thing"},
+            {sentence: "I ___ to school every day", word: "walk", answer: "verb", category: "WALK", explanation: "I walk = action I do"},
+            
+            // WORK
+            {sentence: "My ___ is very difficult", word: "work", answer: "noun", category: "WORK", explanation: "My work = the job/thing"},
+            {sentence: "She will ___ late tonight", word: "work", answer: "verb", category: "WORK", explanation: "She will work = action she does"},
+            
+            // PLAY
+            {sentence: "The ___ was very exciting", word: "play", answer: "noun", category: "PLAY", explanation: "The play = the show/thing"},
+            {sentence: "Children ___ in the garden", word: "play", answer: "verb", category: "PLAY", explanation: "Children play = action they do"},
+            
+            // STUDY
+            {sentence: "My ___ of English is important", word: "study", answer: "noun", category: "STUDY", explanation: "Study of English = the subject/thing"},
+            {sentence: "We ___ together every evening", word: "study", answer: "verb", category: "STUDY", explanation: "We study = action we do"},
+            
+            // DANCE
+            {sentence: "The ___ was beautiful", word: "dance", answer: "noun", category: "DANCE", explanation: "The dance = the performance/thing"},
+            {sentence: "They ___ at the party", word: "dance", answer: "verb", category: "DANCE", explanation: "They dance = action they do"},
+            
+            // COOK
+            {sentence: "The ___ makes delicious food", word: "cook", answer: "noun", category: "COOK", explanation: "The cook = the person/thing"},
+            {sentence: "I ___ dinner every night", word: "cook", answer: "verb", category: "COOK", explanation: "I cook = action I do"},
+            
+            // DRIVE
+            {sentence: "Let's go for a ___", word: "drive", answer: "noun", category: "DRIVE", explanation: "A drive = the trip/thing"},
+            {sentence: "Can you ___ me home?", word: "drive", answer: "verb", category: "DRIVE", explanation: "You drive = action you do"},
+            
+            // SWIM
+            {sentence: "I need a good ___ to relax", word: "swim", answer: "noun", category: "SWIM", explanation: "A swim = the activity/thing"},
+            {sentence: "Fish ___ in the ocean", word: "swim", answer: "verb", category: "SWIM", explanation: "Fish swim = action they do"},
+            
+            // SLEEP
+            {sentence: "I had a good ___ last night", word: "sleep", answer: "noun", category: "SLEEP", explanation: "A sleep = the rest/thing"},
+            {sentence: "Babies ___ a lot", word: "sleep", answer: "verb", category: "SLEEP", explanation: "Babies sleep = action they do"},
+            
+            // HELP
+            {sentence: "Thank you for your ___", word: "help", answer: "noun", category: "HELP", explanation: "Your help = the assistance/thing"},
+            {sentence: "Please ___ me with this", word: "help", answer: "verb", category: "HELP", explanation: "Please help = action you do"},
+            
+            // LOVE
+            {sentence: "Their ___ is very strong", word: "love", answer: "noun", category: "LOVE", explanation: "Their love = the feeling/thing"},
+            {sentence: "I ___ chocolate ice cream", word: "love", answer: "verb", category: "LOVE", explanation: "I love = action/feeling I do"},
+            
+            // CALL
+            {sentence: "I missed your ___ yesterday", word: "call", answer: "noun", category: "CALL", explanation: "Your call = the phone call/thing"},
+            {sentence: "Please ___ me tomorrow", word: "call", answer: "verb", category: "CALL", explanation: "Please call = action you do"},
+            
+            // DREAM
+            {sentence: "I had a strange ___ last night", word: "dream", answer: "noun", category: "DREAM", explanation: "A dream = the vision/thing"},
+            {sentence: "I ___ about flying", word: "dream", answer: "verb", category: "DREAM", explanation: "I dream = action I do"},
+            
+            // SHOP
+            {sentence: "The ___ sells fresh fruit", word: "shop", answer: "noun", category: "SHOP", explanation: "The shop = the store/place"},
+            {sentence: "We ___ for groceries on Sunday", word: "shop", answer: "verb", category: "SHOP", explanation: "We shop = action we do"},
+            
+            // VISIT
+            {sentence: "Our ___ to Thailand was amazing", word: "visit", answer: "noun", category: "VISIT", explanation: "Our visit = the trip/thing"},
+            {sentence: "Let's ___ my grandmother", word: "visit", answer: "verb", category: "VISIT", explanation: "Let's visit = action we do"},
+            
+            // PAINT
+            {sentence: "The ___ on the wall is dry", word: "paint", answer: "noun", category: "PAINT", explanation: "The paint = the color material/thing"},
+            {sentence: "Artists ___ beautiful pictures", word: "paint", answer: "verb", category: "PAINT", explanation: "Artists paint = action they do"}
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+        let shuffledQuestions = [...questions];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function updateDisplay() {
+            const question = shuffledQuestions[currentIndex];
+            document.getElementById('sentence').innerHTML = question.sentence.replace('___', `<span class="target-word">${question.word}</span>`);
+            document.getElementById('category').textContent = `Word: ${question.category}`;
+            document.getElementById('current').textContent = currentIndex + 1;
+            document.getElementById('totalQuestions').textContent = shuffledQuestions.length;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex;
+            document.getElementById('feedback').textContent = '';
+            answered = false;
+        }
+
+        function checkAnswer(selectedType) {
+            if (answered) return;
+            
+            const correctAnswer = shuffledQuestions[currentIndex].answer;
+            const feedbackDiv = document.getElementById('feedback');
+            const explanation = shuffledQuestions[currentIndex].explanation;
+            
+            if (selectedType === correctAnswer) {
+                score++;
+                feedbackDiv.textContent = `✅ Correct! ${explanation}`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                feedbackDiv.innerHTML = `❌ Wrong! It's a <strong>${correctAnswer.toUpperCase()}</strong><br>${explanation}`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+            
+            answered = true;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex + 1;
+        }
+
+        function nextQuestion() {
+            if (currentIndex < shuffledQuestions.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            } else {
+                document.getElementById('sentence').textContent = 'Game Complete! 🎉';
+                document.getElementById('category').textContent = `Final Score: ${score}/${shuffledQuestions.length}`;
+                const percentage = Math.round((score/shuffledQuestions.length)*100);
+                document.getElementById('feedback').textContent = `${percentage}% Correct! ${percentage >= 80 ? 'You understand word functions!' : percentage >= 60 ? 'Good job!' : 'Keep practicing word types!'}`;
+                document.getElementById('feedback').className = 'feedback';
+            }
+        }
+
+        function resetGame() {
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            shuffledQuestions = shuffleArray([...questions]);
+            updateDisplay();
+        }
+
+        // Initialize game
+        shuffledQuestions = shuffleArray([...questions]);
+        updateDisplay();
+    </script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can Could Should Adventure</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #4a5568;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .helper-box {
+            background: #e6fffa;
+            border: 3px solid #4fd1c7;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .helper-title {
+            font-size: 1.3rem;
+            color: #234e52;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .helper-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .helper-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid;
+        }
+        
+        .can-card { border-color: #48bb78; }
+        .could-card { border-color: #ed8936; }
+        .should-card { border-color: #667eea; }
+        
+        .helper-word {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .can-word { color: #48bb78; }
+        .could-word { color: #ed8936; }
+        .should-word { color: #667eea; }
+        
+        .helper-meaning {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+        
+        .helper-example {
+            font-size: 0.9rem;
+            color: #718096;
+            font-style: italic;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+        
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .scenario-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .scenario {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border-left: 5px solid #4299e1;
+        }
+        
+        .question {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .option {
+            padding: 20px;
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .option-word {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .option-sentence {
+            font-size: 1.1rem;
+            color: #4a5568;
+        }
+        
+        .can-option { border-color: #48bb78; }
+        .can-option .option-word { color: #48bb78; }
+        .can-option:hover { background: #f0fff4; }
+        
+        .could-option { border-color: #ed8936; }
+        .could-option .option-word { color: #ed8936; }
+        .could-option:hover { background: #fffaf0; }
+        
+        .should-option { border-color: #667eea; }
+        .should-option .option-word { color: #667eea; }
+        .should-option:hover { background: #f7faff; }
+        
+        .option.correct {
+            background: #c6f6d5;
+            border-color: #48bb78;
+            animation: correctPulse 0.6s ease;
+        }
+        
+        .option.incorrect {
+            background: #fed7d7;
+            border-color: #f56565;
+            animation: incorrectShake 0.6s ease;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .feedback {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 3px solid #48bb78;
+        }
+        
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 3px solid #f56565;
+        }
+        
+        .feedback-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .next-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+        
+        .next-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #48bb78, #4fd1c7);
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🎭 Can Could Should Adventure</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="helper-box">
+            <div class="helper-title">🧠 Quick Helper Guide</div>
+            <div class="helper-grid">
+                <div class="helper-card can-card">
+                    <div class="helper-word can-word">CAN</div>
+                    <div class="helper-meaning">I am able to do it</div>
+                    <div class="helper-example">"I can swim"</div>
+                </div>
+                <div class="helper-card could-card">
+                    <div class="helper-word could-word">COULD</div>
+                    <div class="helper-meaning">Maybe / Possibility</div>
+                    <div class="helper-example">"I could help you"</div>
+                </div>
+                <div class="helper-card should-card">
+                    <div class="helper-word should-word">SHOULD</div>
+                    <div class="helper-meaning">It's a good idea</div>
+                    <div class="helper-example">"I should study"</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">Score</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Streak</div>
+                <div class="score-value" id="streak">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Level</div>
+                <div class="score-value" id="level">1</div>
+            </div>
+        </div>
+        
+        <div class="scenario-container">
+            <div class="scenario" id="scenario"></div>
+            <div class="question" id="question"></div>
+            
+            <div class="options" id="options"></div>
+            
+            <div class="feedback" id="feedback" style="display: none;"></div>
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Adventure!</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state persists during session
+        let gameState = {
+            score: 0,
+            streak: 0,
+            level: 1,
+            currentQuestion: 0,
+            isAnswered: false
+        };
+
+        const scenarios = [
+            {
+                scenario: "🏊‍♀️ Sarah is at the swimming pool. She learned how to swim last year.",
+                question: "What should Sarah say about her swimming ability?",
+                options: [
+                    { word: "can", sentence: "I can swim in the pool", correct: true, explanation: "Perfect! Sarah knows how to swim, so she IS ABLE to swim." },
+                    { word: "could", sentence: "I could swim in the pool", correct: false, explanation: "Not quite right. COULD sounds unsure, but Sarah definitely knows how to swim!" },
+                    { word: "should", sentence: "I should swim in the pool", correct: false, explanation: "Not quite right. SHOULD means 'good idea', but the question is about her ability." }
+                ]
+            },
+            {
+                scenario: "🌧️ It's raining outside. Tom forgot his umbrella at home.",
+                question: "What's good advice for Tom?",
+                options: [
+                    { word: "can", sentence: "You can get wet in the rain", correct: false, explanation: "That's true, but not good advice! CAN means 'able to do'." },
+                    { word: "could", sentence: "You could wait until it stops", correct: false, explanation: "COULD is a suggestion, but there's better advice here!" },
+                    { word: "should", sentence: "You should wait inside until it stops", correct: true, explanation: "Excellent! SHOULD gives the best advice - it's a GOOD IDEA to stay dry!" }
+                ]
+            },
+            {
+                scenario: "🎂 It's Emma's birthday tomorrow. Jake wants to do something nice for her.",
+                question: "What might Jake be thinking?",
+                options: [
+                    { word: "can", sentence: "I can buy her a gift", correct: false, explanation: "CAN means he's able to, but he's still thinking about what to do!" },
+                    { word: "could", sentence: "I could buy her a gift", correct: true, explanation: "Great! COULD shows he's thinking of possibilities - maybe he will!" },
+                    { word: "should", sentence: "I should buy her a gift", correct: false, explanation: "SHOULD means good advice, but he's exploring options, not giving advice." }
+                ]
+            },
+            {
+                scenario: "🚗 Lisa has her driver's license and a car. Her friend needs a ride to school.",
+                question: "What can Lisa say about driving?",
+                options: [
+                    { word: "can", sentence: "I can drive you to school", correct: true, explanation: "Perfect! Lisa has a license and car, so she IS ABLE to drive!" },
+                    { word: "could", sentence: "I could drive you to school", correct: false, explanation: "COULD sounds uncertain, but Lisa definitely can drive!" },
+                    { word: "should", sentence: "I should drive you to school", correct: false, explanation: "SHOULD is about good ideas, not abilities." }
+                ]
+            },
+            {
+                scenario: "😷 Alex feels sick and has a big test tomorrow at school.",
+                question: "What's the best advice for Alex?",
+                options: [
+                    { word: "can", sentence: "You can go to school sick", correct: false, explanation: "CAN means you're able to, but that's not good advice when you're sick!" },
+                    { word: "could", sentence: "You could take the test later", correct: false, explanation: "COULD is a possibility, but there's better advice!" },
+                    { word: "should", sentence: "You should rest and get better", correct: true, explanation: "Excellent! SHOULD gives the best advice - it's a GOOD IDEA to rest when you're sick!" }
+                ]
+            },
+            {
+                scenario: "🎵 Maria is thinking about joining the school choir. She loves singing but feels nervous.",
+                question: "What is Maria considering?",
+                options: [
+                    { word: "can", sentence: "I can join the choir", correct: false, explanation: "CAN means she's able to, but she's still deciding!" },
+                    { word: "could", sentence: "I could join the choir", correct: true, explanation: "Perfect! COULD shows she's thinking about the possibility!" },
+                    { word: "should", sentence: "I should join the choir", correct: false, explanation: "SHOULD is advice, but she's considering options, not giving advice." }
+                ]
+            },
+            {
+                scenario: "🏃‍♂️ Ben runs every morning. His friend asks if he's able to run 5 kilometers.",
+                question: "How should Ben answer about his running ability?",
+                options: [
+                    { word: "can", sentence: "Yes, I can run 5 kilometers", correct: true, explanation: "Great! Ben runs every morning, so he IS ABLE to run that distance!" },
+                    { word: "could", sentence: "Yes, I could run 5 kilometers", correct: false, explanation: "COULD sounds unsure, but Ben definitely can do it!" },
+                    { word: "should", sentence: "Yes, I should run 5 kilometers", correct: false, explanation: "SHOULD is about good ideas, not about abilities." }
+                ]
+            },
+            {
+                scenario: "📚 Jenny didn't do her homework. Her teacher asks why it's late.",
+                question: "What should Jenny realize?",
+                options: [
+                    { word: "can", sentence: "I can do homework late", correct: false, explanation: "CAN means able to, but that's not the lesson here!" },
+                    { word: "could", sentence: "I could have done it yesterday", correct: false, explanation: "COULD talks about past possibility, but what's the real lesson?" },
+                    { word: "should", sentence: "I should have done it yesterday", correct: true, explanation: "Exactly! SHOULD shows she knows it was the RIGHT THING to do!" }
+                ]
+            }
+        ];
+
+        let currentScenario = scenarios[0];
+
+        const updateDisplay = () => {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('progressBar').style.width = 
+                `${(gameState.currentQuestion / scenarios.length) * 100}%`;
+        };
+
+        const displayQuestion = () => {
+            currentScenario = scenarios[gameState.currentQuestion % scenarios.length];
+            
+            document.getElementById('scenario').textContent = currentScenario.scenario;
+            document.getElementById('question').textContent = currentScenario.question;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            currentScenario.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = `option ${option.word}-option`;
+                optionEl.innerHTML = `
+                    <div class="option-word">${option.word.toUpperCase()}</div>
+                    <div class="option-sentence">"${option.sentence}"</div>
+                `;
+                optionEl.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(optionEl);
+            });
+        };
+
+        const checkAnswer = (selectedIndex) => {
+            if (gameState.isAnswered) return;
+            
+            gameState.isAnswered = true;
+            const selectedOption = currentScenario.options[selectedIndex];
+            const isCorrect = selectedOption.correct;
+            
+            // Visual feedback on options
+            document.querySelectorAll('.option').forEach((opt, idx) => {
+                opt.onclick = null; // Disable clicking
+                if (idx === selectedIndex) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+                if (currentScenario.options[idx].correct && idx !== selectedIndex) {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            const feedbackEl = document.getElementById('feedback');
+            feedbackEl.style.display = 'block';
+            
+            if (isCorrect) {
+                gameState.score += 15 + (gameState.streak * 3);
+                gameState.streak++;
+                feedbackEl.className = 'feedback correct';
+                feedbackEl.innerHTML = `
+                    <div class="feedback-title">🎉 Fantastic!</div>
+                    ${selectedOption.explanation}<br>
+                    <strong>+${15 + (gameState.streak * 3 - 3)} points!</strong>
+                `;
+            } else {
+                gameState.streak = 0;
+                feedbackEl.className = 'feedback incorrect';
+                const correctOption = currentScenario.options.find(opt => opt.correct);
+                feedbackEl.innerHTML = `
+                    <div class="feedback-title">🤔 Not quite!</div>
+                    ${selectedOption.explanation}<br>
+                    <strong>The answer was: ${correctOption.word.toUpperCase()}</strong><br>
+                    ${correctOption.explanation}
+                `;
+            }
+            
+            updateDisplay();
+            document.getElementById('nextBtn').disabled = false;
+        };
+
+        const nextQuestion = () => {
+            gameState.currentQuestion++;
+            gameState.isAnswered = false;
+            
+            // Level up every 3 questions
+            if (gameState.currentQuestion % 3 === 0) {
+                gameState.level++;
+            }
+            
+            // End game after all scenarios
+            if (gameState.currentQuestion >= scenarios.length) {
+                endGame();
+                return;
+            }
+            
+            // Reset UI
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('nextBtn').disabled = true;
+            
+            displayQuestion();
+            updateDisplay();
+        };
+
+        const endGame = () => {
+            const scenarioContainer = document.querySelector('.scenario-container');
+            scenarioContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: #4a5568; margin-bottom: 20px;">🏆 Adventure Complete!</h2>
+                    <div style="font-size: 1.3rem; margin-bottom: 20px;">
+                        Final Score: <strong>${gameState.score}</strong>
+                    </div>
+                    <div style="font-size: 1.1rem; color: #718096; margin-bottom: 30px;">
+                        You've mastered Can, Could, and Should!
+                    </div>
+                    <button onclick="restartGame()" class="next-btn">Play Again!</button>
+                </div>
+            `;
+        };
+
+        const restartGame = () => {
+            gameState = { score: 0, streak: 0, level: 1, currentQuestion: 0, isAnswered: false };
+            location.reload();
+        };
+
+        // Initialize game
+        displayQuestion();
+        updateDisplay();
+    </script>
+</body>
+</html>

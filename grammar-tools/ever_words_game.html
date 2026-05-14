@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Whatever Words Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 2.2em;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        
+        .rule-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%);
+            border: 3px solid #52c41a;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .rule-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #52c41a;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .word-card {
+            background: white;
+            border: 3px solid #52c41a;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .word-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .word-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #52c41a;
+            margin-bottom: 8px;
+        }
+        
+        .word-meaning {
+            color: #666;
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+        
+        .word-example {
+            color: #1890ff;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+        
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 3px solid #1890ff;
+        }
+        
+        .situation {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 5px solid #1890ff;
+        }
+        
+        .situation-text {
+            font-size: 1.2em;
+            color: #2d3748;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .choice-btn {
+            background: #1890ff;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        
+        .choice-btn:hover {
+            background: #096dd9;
+            transform: translateY(-2px);
+        }
+        
+        .choice-btn.correct {
+            background: #52c41a;
+        }
+        
+        .choice-btn.wrong {
+            background: #ff4d4f;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        button {
+            background: #722ed1;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #531dab;
+            transform: translateY(-2px);
+        }
+        
+        .talk-section {
+            background: linear-gradient(135deg, #fff2e8 0%, #fff7ed 100%);
+            border: 3px solid #ff7a00;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .talk-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ff7a00;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .discussion-prompt {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 5px solid #ff7a00;
+        }
+        
+        .prompt-text {
+            font-size: 1.2em;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .examples {
+            color: #666;
+            font-style: italic;
+            font-size: 1em;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #722ed1;
+            margin: 15px 0;
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .correct-feedback {
+            background: #d4edda;
+            color: #155724;
+            border: 3px solid #52c41a;
+        }
+        
+        .wrong-feedback {
+            background: #f8d7da;
+            color: #721c24;
+            border: 3px solid #ff4d4f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🌟 Whatever Words Game</h1>
+        
+        <div class="rule-box">
+            <div class="rule-title">🎯 ELI5: "EVER" Words = CHOICE Words!</div>
+            <div style="text-align: center; font-size: 1.1em; margin-bottom: 20px; color: #2d3748;">
+                <strong>Simple Rule:</strong> These words mean "ANY + something" or "it doesn't matter which one"<br>
+                <strong>Teaching Tip:</strong> Use gestures! Point everywhere for "wherever", shrug shoulders for "whatever"
+            </div>
+            <div class="word-grid">
+                <div class="word-card">
+                    <div class="word-name">WHATEVER</div>
+                    <div class="word-meaning">Any THING (I don't care which)</div>
+                    <div class="word-example">"Eat whatever you want" = "Eat any food"</div>
+                </div>
+                <div class="word-card">
+                    <div class="word-name">WHENEVER</div>
+                    <div class="word-meaning">Any TIME (I don't care when)</div>
+                    <div class="word-example">"Come whenever you can" = "Come any time"</div>
+                </div>
+                <div class="word-card">
+                    <div class="word-name">WHEREVER</div>
+                    <div class="word-meaning">Any PLACE (I don't care where)</div>
+                    <div class="word-example">"Sit wherever you like" = "Sit any place"</div>
+                </div>
+                <div class="word-card">
+                    <div class="word-name">WHOEVER</div>
+                    <div class="word-meaning">Any PERSON (I don't care who)</div>
+                    <div class="word-example">"Whoever arrives first wins" = "Any person who..."</div>
+                </div>
+                <div class="word-card">
+                    <div class="word-name">HOWEVER</div>
+                    <div class="word-meaning">BUT (contrast) / Any WAY</div>
+                    <div class="word-example">"It's expensive. However, I'll buy it" = "BUT I'll buy it"</div>
+                </div>
+                <div class="word-card">
+                    <div class="word-name">WHICHEVER</div>
+                    <div class="word-meaning">Any CHOICE between options</div>
+                    <div class="word-example">"Choose whichever looks better" = "Choose any option"</div>
+                </div>
+            </div>
+            <div style="background: #fff7e6; border: 2px solid #ffa940; border-radius: 10px; padding: 15px; margin-top: 15px;">
+                <strong>⚠️ Common Mistakes:</strong><br>
+                ❌ "I go whatever place" → ✅ "I go wherever I want"<br>
+                ❌ "However person comes" → ✅ "Whoever comes first"<br>
+                ❌ "I like whichever food" → ✅ "I like whatever food you cook"
+            </div>
+        </div>
+        
+        <div class="game-section">
+            <h3 style="text-align: center; color: #1890ff; margin-bottom: 20px;">🎯 Choose the Right Word!</h3>
+            <div class="situation" id="situation">
+                <div class="situation-text" id="situationText"></div>
+                <div class="choices" id="choices"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="nextSituation()">➡️ Next Question</button>
+            <button onclick="showTalk()">💬 Let's Discuss!</button>
+            <button onclick="jumpToLevel('Basic')" style="background: #52c41a;">📚 Basic Level</button>
+            <button onclick="jumpToLevel('Tricky')" style="background: #ff7a00;">🧩 Tricky Level</button>
+            <button onclick="restartGame()" style="background: #722ed1;">🔄 Restart Game</button>
+        </div>
+        
+        <div class="score">
+            Score: <span id="score">0</span> | 
+            Question: <span id="currentQuestion">1</span>/<span id="totalQuestions">12</span> |
+            Questions Answered: <span id="questionCount">0</span>
+        </div>
+        
+        <div id="feedback" class="feedback" style="display: none;"></div>
+        
+        <div class="talk-section" id="talkSection" style="display: none;">
+            <div class="talk-title">🗣️ Discussion Time!</div>
+            <div class="discussion-prompt">
+                <div class="prompt-text" id="discussionPrompt"></div>
+                <div class="examples" id="discussionExamples"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameData = JSON.parse(localStorage.getItem('everWordsGame')) || { score: 0, questionCount: 0 };
+        let currentSituation = 0;
+        
+        const situations = [
+            // Basic Level
+            {
+                text: "Your colleague asks what you want for lunch. You don't have a preference. You say:",
+                choices: [
+                    "Whatever you choose is fine with me!",
+                    "However you choose is fine with me!",
+                    "Wherever you choose is fine with me!"
+                ],
+                correct: 0,
+                level: "Basic",
+                discussion: "What's your favorite food to eat with colleagues? Do you have dietary restrictions?",
+                examples: "Example: 'I like whatever is healthy' or 'I can eat whatever except spicy food'"
+            },
+            {
+                text: "Your boss says you can submit the report at any time before Friday. You respond:",
+                choices: [
+                    "I'll submit it whatever works best for you",
+                    "I'll submit it whenever works best for you",
+                    "I'll submit it wherever works best for you"
+                ],
+                correct: 1,
+                level: "Basic",
+                discussion: "How do you manage deadlines at work? Are you an early submitter or last-minute person?",
+                examples: "Example: 'I work whenever I feel most productive' or 'I can meet whenever you're available'"
+            },
+            {
+                text: "You're flexible about the meeting location. You tell your team:",
+                choices: [
+                    "We can meet whatever is most convenient",
+                    "We can meet whenever is most convenient", 
+                    "We can meet wherever is most convenient"
+                ],
+                correct: 2,
+                level: "Basic",
+                discussion: "Do you prefer online meetings or in-person? What makes a good meeting space?",
+                examples: "Example: 'I can work wherever there's good WiFi' or 'I'm comfortable wherever the team decides'"
+            },
+            
+            // Intermediate Level
+            {
+                text: "You're organizing a company event and want to be inclusive. You announce:",
+                choices: [
+                    "Whatever is interested in joining should contact me",
+                    "Whoever is interested in joining should contact me",
+                    "Whenever is interested in joining should contact me"
+                ],
+                correct: 1,
+                level: "Intermediate",
+                discussion: "What kind of company events do you enjoy? How do you include everyone at work?",
+                examples: "Example: 'Whoever has good ideas should share them' or 'I respect whoever works hard'"
+            },
+            {
+                text: "Your project is challenging, but you're determined to succeed. You tell your supervisor:",
+                choices: [
+                    "This is difficult. Whatever, I believe we can complete it on time.",
+                    "This is difficult. However, I believe we can complete it on time.",
+                    "This is difficult. Wherever, I believe we can complete it on time."
+                ],
+                correct: 1,
+                level: "Intermediate",
+                discussion: "How do you stay motivated when work is difficult? What helps you overcome challenges?",
+                examples: "Example: 'I'm tired. However, I always finish my tasks' or 'It's stressful. However, I like learning new things'"
+            },
+            {
+                text: "You have two equally good job offers and can't decide. You tell your friend:",
+                choices: [
+                    "I'll accept whatever offer gives me better benefits",
+                    "I'll accept whichever offer gives me better benefits", 
+                    "I'll accept wherever offer gives me better benefits"
+                ],
+                correct: 1,
+                level: "Intermediate",
+                discussion: "What's most important to you in a job? Salary, location, colleagues, or growth opportunities?",
+                examples: "Example: 'I choose whichever company has good culture' or 'I'll take whichever job makes me happier'"
+            },
+
+            // Advanced/Tricky Level
+            {
+                text: "You're discussing flexible work arrangements. You want to emphasize you'll adapt to any schedule:",
+                choices: [
+                    "I can adjust my schedule to whatever times work for the team",
+                    "I can adjust my schedule to whichever times work for the team",
+                    "I can adjust my schedule to whenever works for the team"
+                ],
+                correct: 0,
+                level: "Tricky",
+                discussion: "Do you prefer flexible hours or fixed schedule? How do you balance work and personal life?",
+                examples: "Example: 'I'm productive at whatever time I start' or 'I can adapt to whatever the company needs'"
+            },
+            {
+                text: "You're training a new employee who can ask questions at any time. You say:",
+                choices: [
+                    "Feel free to ask me questions whatever you need help",
+                    "Feel free to ask me questions whenever you need help",
+                    "Feel free to ask me questions wherever you need help"
+                ],
+                correct: 1,
+                level: "Tricky",
+                discussion: "How do you like to learn new things? Do you ask questions immediately or figure things out alone first?",
+                examples: "Example: 'I learn best whenever someone explains clearly' or 'I ask questions whenever I'm confused'"
+            },
+            {
+                text: "Your company is expanding globally. You're open to relocation. You tell HR:",
+                choices: [
+                    "I'm willing to relocate to whatever country needs my skills",
+                    "I'm willing to relocate to whichever country needs my skills",
+                    "I'm willing to relocate to wherever the company needs my skills"
+                ],
+                correct: 2,
+                level: "Tricky",
+                discussion: "Would you move to another country for work? What excites or worries you about working abroad?",
+                examples: "Example: 'I can adapt wherever I live' or 'I'm excited to work wherever there are new opportunities'"
+            },
+            {
+                text: "You're explaining your work philosophy about accepting any project assignment:",
+                choices: [
+                    "I believe in giving my best effort in whatever project I'm assigned to",
+                    "I believe in giving my best effort in whichever project I'm assigned to",
+                    "I believe in giving my best effort in wherever project I'm assigned to"
+                ],
+                correct: 0,
+                level: "Tricky",
+                discussion: "Do you have a favorite type of work project? How do you stay motivated in different kinds of tasks?",
+                examples: "Example: 'I learn from whatever challenges I face' or 'I put effort into whatever work I do'"
+            },
+
+            // Very Advanced
+            {
+                text: "You're discussing career growth with your mentor. You want to show flexibility about advancement paths:",
+                choices: [
+                    "I'm open to pursuing whatever career path aligns with company goals",
+                    "I'm open to pursuing whichever career path aligns with company goals",
+                    "I'm open to pursuing wherever career path aligns with company goals"
+                ],
+                correct: 0,
+                level: "Advanced",
+                discussion: "What are your career goals? Do you plan your career path or prefer to be flexible?",
+                examples: "Example: 'I'll develop whatever skills the market demands' or 'I'm interested in whatever helps me grow'"
+            },
+            {
+                text: "You're in a salary negotiation and want to show you'll consider various compensation packages:",
+                choices: [
+                    "I'm willing to consider whatever compensation package you think is fair",
+                    "I'm willing to consider whichever compensation package you think is fair",
+                    "I'm willing to consider wherever compensation package you think is fair"
+                ],
+                correct: 0,
+                level: "Advanced",
+                discussion: "How do you approach salary negotiations? What's more important: money, benefits, or work-life balance?",
+                examples: "Example: 'I value whatever benefits support my family' or 'I appreciate whatever recognition I receive'"
+            },
+            {
+                text: "You're leading a diverse team and want to be inclusive about different working styles:",
+                choices: [
+                    "Our team should respect whatever working style helps each person be productive",
+                    "Our team should respect whichever working style helps each person be productive",
+                    "Our team should respect wherever working style helps each person be productive"
+                ],
+                correct: 0,
+                level: "Advanced",
+                discussion: "What's your working style? Do you work better alone, in teams, with music, in silence?",
+                examples: "Example: 'I support whatever approach gets good results' or 'I respect whatever methods work for others'"
+            }
+        ];
+        
+        function loadSituation() {
+            const current = situations[currentSituation];
+            const situationDiv = document.getElementById('situationText');
+            
+            // Add level indicator for teacher reference
+            situationDiv.innerHTML = `
+                <div style="background: #f0f0f0; padding: 8px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; font-size: 0.9em; color: #666;">
+                    ${current.level} Level
+                </div><br>
+                ${current.text}
+            `;
+            
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = current.choices.map((choice, index) => 
+                `<button class="choice-btn" onclick="selectChoice(${index})">${choice}</button>`
+            ).join('');
+            
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('talkSection').style.display = 'none';
+        }
+        
+        function selectChoice(choiceIndex) {
+            const current = situations[currentSituation];
+            const buttons = document.querySelectorAll('.choice-btn');
+            const feedback = document.getElementById('feedback');
+            
+            gameData.questionCount++;
+            
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === current.correct) {
+                    btn.classList.add('correct');
+                } else if (index === choiceIndex && index !== current.correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+            
+            if (choiceIndex === current.correct) {
+                feedback.innerHTML = `🎉 Perfect! You used the right "ever" word!<br><small>💡 <strong>Why?</strong> ${getExplanation(current, choiceIndex)}</small>`;
+                feedback.className = 'feedback correct-feedback';
+                gameData.score += 10;
+            } else {
+                const correctAnswer = current.choices[current.correct];
+                feedback.innerHTML = `🤔 Good try! The correct answer is: "${correctAnswer}"<br><small>💡 <strong>Why?</strong> ${getExplanation(current, current.correct)}</small>`;
+                feedback.className = 'feedback wrong-feedback';
+            }
+            
+            feedback.style.display = 'block';
+            updateScore();
+            localStorage.setItem('everWordsGame', JSON.stringify(gameData));
+        }
+        
+        function nextSituation() {
+            currentSituation = (currentSituation + 1) % situations.length;
+            loadSituation();
+        }
+        
+        function showTalk() {
+            const current = situations[currentSituation];
+            document.getElementById('discussionPrompt').textContent = current.discussion;
+            document.getElementById('discussionExamples').textContent = current.examples;
+            document.getElementById('talkSection').style.display = 'block';
+        }
+        
+        function getExplanation(situation, answerIndex) {
+            const word = situation.choices[answerIndex].match(/(whatever|whenever|wherever|whoever|however|whichever)/i);
+            if (!word) return "This choice uses the correct grammar structure.";
+            
+            const explanations = {
+                'whatever': 'We use "whatever" for ANY THING (objects, ideas, choices)',
+                'whenever': 'We use "whenever" for ANY TIME (any moment, no specific time)',
+                'wherever': 'We use "wherever" for ANY PLACE (any location)',
+                'whoever': 'We use "whoever" for ANY PERSON (any individual)',
+                'however': 'We use "however" to show CONTRAST (like "but") or ANY WAY',
+                'whichever': 'We use "whichever" when choosing between specific OPTIONS'
+            };
+            
+            return explanations[word[0].toLowerCase()] || "This uses correct grammar.";
+        }
+        
+        function restartGame() {
+            if (confirm("Are you sure you want to restart? This will reset your score.")) {
+                gameData = { score: 0, questionCount: 0 };
+                currentSituation = 0;
+                localStorage.setItem('everWordsGame', JSON.stringify(gameData));
+                loadSituation();
+                updateScore();
+            }
+        }
+        
+        function jumpToLevel(level) {
+            const levelQuestions = situations.map((s, index) => ({ ...s, originalIndex: index }))
+                                            .filter(s => s.level === level);
+            
+            if (levelQuestions.length > 0) {
+                currentSituation = levelQuestions[0].originalIndex;
+                loadSituation();
+            }
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = gameData.score;
+            document.getElementById('questionCount').textContent = gameData.questionCount;
+            document.getElementById('currentQuestion').textContent = currentSituation + 1;
+            document.getElementById('totalQuestions').textContent = situations.length;
+        }
+        
+        // Initialize game
+        document.getElementById('totalQuestions').textContent = situations.length;
+        updateScore();
+        loadSituation();
+        
+        // Add keyboard shortcuts for accessibility
+        document.addEventListener('keydown', function(e) {
+            if (e.key >= '1' && e.key <= '3') {
+                const choiceIndex = parseInt(e.key) - 1;
+                const buttons = document.querySelectorAll('.choice-btn:not(:disabled)');
+                if (buttons[choiceIndex]) {
+                    buttons[choiceIndex].click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

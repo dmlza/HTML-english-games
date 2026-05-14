@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20 Questions - English Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .controls-bar {
+            background: #f8f9ff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .show-words-btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .show-words-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .counter-section {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .counter {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .counter-controls {
+            margin-top: 15px;
+        }
+
+        .btn {
+            background: white;
+            color: #ff6b6b;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: transparent;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .toggle-btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(90deg, #00d2d3, #54a0ff);
+        }
+
+        .game-area {
+            padding: 30px;
+        }
+
+        .questions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .question-category {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .category-header {
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .question-list {
+            padding: 15px;
+        }
+
+        .question-item {
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            font-size: 15px;
+        }
+
+        .question-item:hover {
+            background: #f0f7ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .question-item.used {
+            background: #ffeaa7;
+            text-decoration: line-through;
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .question-item.used:hover {
+            background: #ffeaa7;
+            border-color: transparent;
+            transform: none;
+        }
+
+        /* Word Selection Overlay */
+        .word-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: none;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .word-modal {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .word-tables {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .word-table {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .animals-section {
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+        }
+
+        .food-section {
+            background: linear-gradient(45deg, #fd79a8, #fdcb6e);
+        }
+
+        .category-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            border-bottom: 2px solid #667eea;
+            font-weight: bold;
+            background: #f8f9ff;
+        }
+
+        .category-cell, .word-cell {
+            padding: 12px 8px;
+            border-right: 1px solid #ddd;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .category-cell {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .word-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            border-bottom: 1px solid #eee;
+        }
+
+        .word-row:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .word-row:hover {
+            background: #e3f2fd;
+        }
+
+        .word-cell {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .word-cell:hover {
+            background: #ffeb3b;
+            font-weight: bold;
+        }
+
+        .places-mode {
+            display: none;
+        }
+
+        .places-instructions {
+            text-align: center;
+            padding: 40px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .places-instructions h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .places-instructions p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .questions-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .word-tables {
+                flex-direction: column;
+            }
+            
+            .category-row, .word-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-cell, .word-cell {
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 20 Questions Game</h1>
+            <p>Practice English Questions - For Thai Students</p>
+        </div>
+
+        <div class="controls-bar">
+            <button class="show-words-btn" onclick="showWordSelection()">📋 Show Word List</button>
+            
+            <div class="counter-section">
+                <div>Questions Used</div>
+                <div class="counter" id="questionCounter">0 / 20</div>
+                <div class="counter-controls">
+                    <button class="btn" id="addBtn" onclick="addQuestion()">+ Add</button>
+                    <button class="btn" id="removeBtn" onclick="removeQuestion()">- Remove</button>
+                    <button class="btn" onclick="resetCounter()">🔄 Reset</button>
+                </div>
+            </div>
+
+            <div class="mode-toggle">
+                <button class="toggle-btn active" onclick="showMode('objects')">Objects</button>
+                <button class="toggle-btn" onclick="showMode('places')">Places</button>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="objects-mode" id="objectsMode">
+                <div class="questions-container">
+                    <div class="question-category">
+                        <div class="category-header">Basic Nature</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it alive?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it a plant?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it a person?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it made by people?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Size & Shape</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it bigger than a person?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it bigger than a shoe box?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Can you hold it in one hand?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it round?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Location & Place</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Do you find it inside houses?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do you find it outside?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it common in Thailand?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do you see it in schools?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Function & Use</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Do people use it daily?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Can you eat or drink it?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Can you wear it?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it used for work?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Physical Properties</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it soft to touch?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it made of metal?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it heavy?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Does it break easily?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Special Features</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Does it need electricity?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Does it make sound?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Can it move by itself?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Does it have many colors?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Age & Cost</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it expensive to buy?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do children use it?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it new technology?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Can you buy it in Thailand?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="places-mode" id="placesMode">
+                <div class="questions-container">
+                    <div class="question-category">
+                        <div class="category-header">Indoor or Outdoor</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it inside a building?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it outside?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Does it have a roof?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it air conditioned?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Access & Entry</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Do you need to pay to enter?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Can anyone go there?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do you need permission?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it open 24 hours?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Activities</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Do people eat there?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do people buy things there?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do people sleep there?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do people learn there?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Size & Crowd</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it bigger than a classroom?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Are there many people usually?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it quiet most of the time?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Can 100+ people be there?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Home & Family</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it in most Thai homes?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do families use it together?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it private?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do you use water there?</div>
+                        </div>
+                    </div>
+
+                    <div class="question-category">
+                        <div class="category-header">Location Type</div>
+                        <div class="question-list">
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it in Bangkok?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Do tourists visit there?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it a government place?</div>
+                            <div class="question-item" onclick="toggleQuestion(this)">Is it for transportation?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Word Selection Overlay -->
+    <div class="word-overlay" id="wordOverlay">
+        <div class="word-modal">
+            <button class="close-btn" onclick="hideWordSelection()">×</button>
+            
+            <div class="modal-header">
+                <h2>📋 Choose Your Word</h2>
+                <p>Student selects a word from the list below</p>
+            </div>
+
+            <div class="objects-words" id="objectsWords">
+                <div class="word-tables">
+                    <div class="word-table">
+                        <div class="table-header animals-section">Animals</div>
+                        <div class="category-row">
+                            <div class="category-cell">Category</div>
+                            <div class="category-cell">Easy</div>
+                            <div class="category-cell">Medium</div>
+                            <div class="category-cell">Hard</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell" style="font-weight: bold; background: #667eea; color: white;">Animals</div>
+                            <div class="word-cell">cat</div>
+                            <div class="word-cell">tiger</div>
+                            <div class="word-cell">platypus</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">dog</div>
+                            <div class="word-cell">penguin</div>
+                            <div class="word-cell">chameleon</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">fish</div>
+                            <div class="word-cell">elephant</div>
+                            <div class="word-cell">flamingo</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">bird</div>
+                            <div class="word-cell">octopus</div>
+                            <div class="word-cell">sloth</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">cow</div>
+                            <div class="word-cell">kangaroo</div>
+                            <div class="word-cell">peacock</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">horse</div>
+                            <div class="word-cell">giraffe</div>
+                            <div class="word-cell">porcupine</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">chicken</div>
+                            <div class="word-cell">dolphin</div>
+                            <div class="word-cell">seahorse</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">mouse</div>
+                            <div class="word-cell">butterfly</div>
+                            <div class="word-cell">anteater</div>
+                        </div>
+                    </div>
+
+                    <div class="word-table">
+                        <div class="table-header food-section">Food & Others</div>
+                        <div class="category-row">
+                            <div class="category-cell">Category</div>
+                            <div class="category-cell">Easy</div>
+                            <div class="category-cell">Medium</div>
+                            <div class="category-cell">Hard</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell" style="font-weight: bold; background: #667eea; color: white;">Food</div>
+                            <div class="word-cell">rice</div>
+                            <div class="word-cell">pizza</div>
+                            <div class="word-cell">artichoke</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">apple</div>
+                            <div class="word-cell">sushi</div>
+                            <div class="word-cell">croissant</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">bread</div>
+                            <div class="word-cell">avocado</div>
+                            <div class="word-cell">baguette</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">banana</div>
+                            <div class="word-cell">coconut</div>
+                            <div class="word-cell">pretzel</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">chicken</div>
+                            <div class="word-cell">pancakes</div>
+                            <div class="word-cell">watermelon</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">chocolate</div>
+                            <div class="word-cell">sandwich</div>
+                            <div class="word-cell">mango</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">ice cream</div>
+                            <div class="word-cell">spaghetti</div>
+                            <div class="word-cell">pineapple</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">soup</div>
+                            <div class="word-cell">cheese</div>
+                            <div class="word-cell">bagel</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell" style="font-weight: bold; background: #667eea; color: white;">Objects</div>
+                            <div class="word-cell">ball</div>
+                            <div class="word-cell">phone</div>
+                            <div class="word-cell">microscope</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">book</div>
+                            <div class="word-cell">computer</div>
+                            <div class="word-cell">compass</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">chair</div>
+                            <div class="word-cell">telescope</div>
+                            <div class="word-cell">saxophone</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">glasses</div>
+                            <div class="word-cell">umbrella</div>
+                            <div class="word-cell">typewriter</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">watch</div>
+                            <div class="word-cell">calculator</div>
+                            <div class="word-cell">chandelier</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">shoes</div>
+                            <div class="word-cell">microwave</div>
+                            <div class="word-cell">thermostat</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">car</div>
+                            <div class="word-cell">hammer</div>
+                            <div class="word-cell">periscope</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">mirror</div>
+                            <div class="word-cell">backpack</div>
+                            <div class="word-cell">metronome</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell" style="font-weight: bold; background: #667eea; color: white;">Vehicles</div>
+                            <div class="word-cell">bike</div>
+                            <div class="word-cell">airplane</div>
+                            <div class="word-cell">helicopter</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">bus</div>
+                            <div class="word-cell">motorcycle</div>
+                            <div class="word-cell">submarine</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">train</div>
+                            <div class="word-cell">bicycle</div>
+                            <div class="word-cell">sailboat</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">boat</div>
+                            <div class="word-cell">truck</div>
+                            <div class="word-cell">spaceship</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell" style="font-weight: bold; background: #667eea; color: white;">Clothing</div>
+                            <div class="word-cell">hat</div>
+                            <div class="word-cell">taxi</div>
+                            <div class="word-cell">tuxedo</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">shirt</div>
+                            <div class="word-cell">jacket</div>
+                            <div class="word-cell">bowtie</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">pants</div>
+                            <div class="word-cell">scarf</div>
+                            <div class="word-cell">suspenders</div>
+                        </div>
+                        <div class="word-row">
+                            <div class="word-cell"></div>
+                            <div class="word-cell">socks</div>
+                            <div class="word-cell">gloves</div>
+                            <div class="word-cell">kimono</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="places-words" id="placesWords" style="display: none;">
+                <div class="places-instructions">
+                    <h3>🏢 Students choose any place they know!</h3>
+                    <p><strong>Examples:</strong> home, school, temple, market, Bangkok, kitchen, MBK, Chatuchak, shopping mall, bedroom, bathroom, restaurant, park, hospital, airport, etc.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let questionCount = 0;
+        let currentMode = 'objects';
+
+        function addQuestion() {
+            if (questionCount < 20) {
+                questionCount++;
+                updateCounter();
+            }
+        }
+
+        function removeQuestion() {
+            if (questionCount > 0) {
+                questionCount--;
+                updateCounter();
+            }
+        }
+
+        function resetCounter() {
+            questionCount = 0;
+            updateCounter();
+            // Reset all question visual states
+            document.querySelectorAll('.question-item').forEach(item => {
+                item.classList.remove('used');
+            });
+        }
+
+        function updateCounter() {
+            const counter = document.getElementById('questionCounter');
+            const addBtn = document.getElementById('addBtn');
+            const removeBtn = document.getElementById('removeBtn');
+            
+            counter.textContent = `${questionCount} / 20`;
+            
+            // Disable buttons at limits
+            if (questionCount >= 20) {
+                addBtn.disabled = true;
+                counter.style.color = '#ffeb3b';
+                counter.innerHTML += ' <span style="font-size: 0.8em;">MAX!</span>';
+            } else {
+                addBtn.disabled = false;
+                counter.style.color = 'white';
+            }
+            
+            removeBtn.disabled = questionCount <= 0;
+        }
+
+        function toggleQuestion(element) {
+            if (!element.classList.contains('used')) {
+                element.classList.add('used');
+            } else {
+                element.classList.remove('used');
+            }
+        }
+
+        function showMode(mode) {
+            currentMode = mode;
+            const objectsMode = document.getElementById('objectsMode');
+            const placesMode = document.getElementById('placesMode');
+            const buttons = document.querySelectorAll('.toggle-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (mode === 'objects') {
+                objectsMode.style.display = 'block';
+                placesMode.style.display = 'none';
+                buttons[0].classList.add('active');
+            } else {
+                objectsMode.style.display = 'none';
+                placesMode.style.display = 'block';
+                buttons[1].classList.add('active');
+            }
+            
+            resetCounter();
+        }
+
+        function showWordSelection() {
+            const overlay = document.getElementById('wordOverlay');
+            const objectsWords = document.getElementById('objectsWords');
+            const placesWords = document.getElementById('placesWords');
+            
+            if (currentMode === 'objects') {
+                objectsWords.style.display = 'block';
+                placesWords.style.display = 'none';
+            } else {
+                objectsWords.style.display = 'none';
+                placesWords.style.display = 'block';
+            }
+            
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideWordSelection() {
+            const overlay = document.getElementById('wordOverlay');
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close overlay when clicking outside modal
+        document.getElementById('wordOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideWordSelection();
+            }
+        });
+
+        // Close overlay with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideWordSelection();
+            }
+        });
+
+        // Initialize UI state
+        updateCounter();
+    </script>
+</body>
+</html>

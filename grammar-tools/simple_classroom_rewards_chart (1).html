@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Rewards Chart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        /* Floating stars background */
+        .star-bg {
+            position: fixed;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: shimmer 20s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+
+        .header h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .session-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 3;
+        }
+
+        .session-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .session-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .session-btn.active {
+            background: white;
+            color: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .controls {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .student-input {
+            padding: 15px 20px;
+            border: 3px solid transparent;
+            border-radius: 20px;
+            font-size: 16px;
+            font-family: inherit;
+            min-width: 250px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .student-input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn {
+            border: none;
+            padding: 15px 25px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ffa726);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffa726, #ffcc02);
+            color: white;
+        }
+
+        .chart-container {
+            padding: 40px 30px;
+            background: white;
+            min-height: 400px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 15px 25px;
+            border-radius: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .legend-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .legend-star {
+            font-size: 24px;
+        }
+
+        .legend-text {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 180px repeat(10, 1fr);
+            gap: 2px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: #dee2e6;
+        }
+
+        .header-cell {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 20px 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .header-cell:first-child {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-size: 16px;
+        }
+
+        .name-cell {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px 15px;
+            font-weight: 600;
+            font-size: 15px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        .name-cell:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .remove-student {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 107, 107, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-student:hover {
+            background: #ff6b6b;
+            transform: scale(1.2);
+        }
+
+        .star-cell {
+            background: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .star-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .star-cell:hover::before {
+            left: 100%;
+        }
+
+        .star-cell:hover {
+            background: linear-gradient(135deg, #ffe0b3, #ffd4a3);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .star-cell.filled {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            position: relative;
+        }
+
+        .star-cell.filled:hover {
+            background: linear-gradient(135deg, #ffed4e, #ffcc02);
+        }
+
+        .star {
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: starPop 0.5s ease-out;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(0deg); }
+            80% { transform: scale(1.2) rotate(360deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .empty-chart {
+            text-align: center;
+            padding: 80px 40px;
+            color: #6c757d;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .empty-chart h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .empty-chart p {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 25px 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .session-toggle {
+                position: static;
+                justify-content: center;
+                margin-top: 15px;
+            }
+
+            .chart-grid {
+                grid-template-columns: 140px repeat(5, 1fr);
+                font-size: 13px;
+            }
+            
+            .header-cell, .name-cell {
+                padding: 15px 8px;
+                font-size: 13px;
+            }
+
+            .star {
+                font-size: 20px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .legend {
+                gap: 20px;
+            }
+
+            .legend-item {
+                padding: 12px 20px;
+            }
+
+            .student-input {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chart-grid {
+                grid-template-columns: 120px repeat(5, 1fr);
+            }
+            
+            .legend {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background stars -->
+    <div class="star-bg" style="top: 10%; left: 5%; animation-delay: 0s;">⭐</div>
+    <div class="star-bg" style="top: 20%; right: 10%; animation-delay: 1s;">✨</div>
+    <div class="star-bg" style="top: 60%; left: 8%; animation-delay: 2s;">🌟</div>
+    <div class="star-bg" style="bottom: 15%; right: 15%; animation-delay: 3s;">⭐</div>
+    <div class="star-bg" style="bottom: 40%; left: 12%; animation-delay: 4s;">✨</div>
+    <div class="star-bg" style="top: 45%; right: 5%; animation-delay: 5s;">🌟</div>
+
+    <div class="container">
+        <div class="header">
+            <div class="session-toggle">
+                <button class="session-btn active" onclick="switchSession(1)">Session 1</button>
+                <button class="session-btn" onclick="switchSession(2)">Session 2</button>
+            </div>
+            <h1>⭐ Classroom Rewards Chart ⭐</h1>
+            <p>Click the squares to give stars for great participation!</p>
+        </div>
+
+        <div class="controls">
+            <input type="text" class="student-input" id="studentNameInput" placeholder="Enter student name..." />
+            <button class="btn btn-primary" onclick="addStudent()">
+                <span>➕</span> Add Student
+            </button>
+            <button class="btn btn-secondary" onclick="clearAll()">
+                <span>🗑️</span> Clear All
+            </button>
+            <button class="btn btn-warning" onclick="resetSession()">
+                <span>🔄</span> Reset Session
+            </button>
+        </div>
+
+        <div class="chart-container">
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-star">⭐</span>
+                    <span class="legend-text">Click empty squares to add stars</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-star">✨</span>
+                    <span class="legend-text">Click filled squares to remove stars</span>
+                </div>
+            </div>
+
+            <div id="chartArea">
+                <div class="empty-chart">
+                    <h3>🌟 Ready to Track Stars! 🌟</h3>
+                    <p>Add your first student to get started</p>
+                </div>
+            </div>
+
+            <div class="stats" id="statsArea" style="display: none;">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-label">Students</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalStars">0</div>
+                    <div class="stat-label">Total Stars</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="averageStars">0</div>
+                    <div class="stat-label">Average Stars</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="topPerformer">-</div>
+                    <div class="stat-label">⭐ Star Student ⭐</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let students = [];
+        let currentSession = 1;
+        const maxStars = 10;
+
+        // Local Storage Keys
+        const STORAGE_KEYS = {
+            students: 'classroom_rewards_students',
+            currentSession: 'classroom_rewards_session'
+        };
+
+        class Student {
+            constructor(name) {
+                this.name = name;
+                this.session1Stars = 0;
+                this.session2Stars = 0;
+            }
+
+            getStars(session = currentSession) {
+                return session === 1 ? this.session1Stars : this.session2Stars;
+            }
+
+            setStars(stars, session = currentSession) {
+                if (session === 1) {
+                    this.session1Stars = Math.max(0, Math.min(maxStars, stars));
+                } else {
+                    this.session2Stars = Math.max(0, Math.min(maxStars, stars));
+                }
+                saveToLocalStorage(); // Save after every change
+            }
+
+            getTotalStars() {
+                return this.session1Stars + this.session2Stars;
+            }
+        }
+
+        // Local Storage Functions
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.students, JSON.stringify(students));
+                localStorage.setItem(STORAGE_KEYS.currentSession, currentSession.toString());
+            } catch (error) {
+                console.log('Could not save to localStorage:', error);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                // Load students
+                const savedStudents = localStorage.getItem(STORAGE_KEYS.students);
+                if (savedStudents) {
+                    const studentsData = JSON.parse(savedStudents);
+                    students = studentsData.map(data => {
+                        const student = new Student(data.name);
+                        student.session1Stars = data.session1Stars || 0;
+                        student.session2Stars = data.session2Stars || 0;
+                        return student;
+                    });
+                }
+
+                // Load current session
+                const savedSession = localStorage.getItem(STORAGE_KEYS.currentSession);
+                if (savedSession) {
+                    currentSession = parseInt(savedSession) || 1;
+                }
+            } catch (error) {
+                console.log('Could not load from localStorage:', error);
+                students = [];
+                currentSession = 1;
+            }
+        }
+
+        function clearLocalStorage() {
+            try {
+                localStorage.removeItem(STORAGE_KEYS.students);
+                localStorage.removeItem(STORAGE_KEYS.currentSession);
+            } catch (error) {
+                console.log('Could not clear localStorage:', error);
+            }
+        }
+
+        function addStudent() {
+            const input = document.getElementById('studentNameInput');
+            const name = input.value.trim();
+            
+            if (!name) {
+                input.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => input.style.animation = '', 500);
+                return;
+            }
+
+            if (students.find(s => s.name.toLowerCase() === name.toLowerCase())) {
+                alert('🌟 Student already exists! 🌟');
+                return;
+            }
+
+            students.push(new Student(name));
+            input.value = '';
+            saveToLocalStorage(); // Save after adding student
+            renderChart();
+            updateStats();
+        }
+
+        function removeStudent(name) {
+            if (confirm(`Remove ${name} from the chart? ⭐`)) {
+                students = students.filter(s => s.name !== name);
+                saveToLocalStorage(); // Save after removing student
+                renderChart();
+                updateStats();
+            }
+        }
+
+        function toggleStar(studentName, starIndex) {
+            const student = students.find(s => s.name === studentName);
+            if (!student) return;
+
+            const currentStars = student.getStars();
+            
+            if (starIndex < currentStars) {
+                student.setStars(starIndex);
+            } else {
+                student.setStars(starIndex + 1);
+            }
+
+            // Save is handled in the setStars method
+            renderChart();
+            updateStats();
+        }
+
+        function switchSession(session) {
+            currentSession = session;
+            saveToLocalStorage(); // Save session change
+            
+            document.querySelectorAll('.session-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderChart();
+            updateStats();
+        }
+
+        function clearAll() {
+            if (confirm('Remove all students? This cannot be undone! 🌟')) {
+                students = [];
+                clearLocalStorage(); // Clear saved data
+                renderChart();
+                updateStats();
+            }
+        }
+
+        function resetSession() {
+            if (confirm(`Reset all stars for Session ${currentSession}? ⭐`)) {
+                students.forEach(student => {
+                    student.setStars(0);
+                });
+                // Save is handled in the setStars method
+                renderChart();
+                updateStats();
+            }
+        }
+
+        function renderChart() {
+            const chartArea = document.getElementById('chartArea');
+            const statsArea = document.getElementById('statsArea');
+
+            if (students.length === 0) {
+                chartArea.innerHTML = `
+                    <div class="empty-chart">
+                        <h3>🌟 Ready to Track Stars! 🌟</h3>
+                        <p>Add your first student to get started</p>
+                    </div>
+                `;
+                statsArea.style.display = 'none';
+                return;
+            }
+
+            statsArea.style.display = 'grid';
+
+            let headerRow = '<div class="header-cell">Students</div>';
+            for (let i = 1; i <= maxStars; i++) {
+                headerRow += `<div class="header-cell">⭐ ${i}</div>`;
+            }
+
+            let studentRows = '';
+            students.forEach(student => {
+                const currentStars = student.getStars();
+                
+                studentRows += `
+                    <div class="name-cell">
+                        <button class="remove-student" onclick="removeStudent('${student.name}')" title="Remove ${student.name}">×</button>
+                        ${student.name}
+                    </div>
+                `;
+
+                for (let i = 0; i < maxStars; i++) {
+                    const isFilled = i < currentStars;
+                    studentRows += `
+                        <div class="star-cell ${isFilled ? 'filled' : ''}" 
+                             onclick="toggleStar('${student.name}', ${i})"
+                             title="${isFilled ? 'Click to remove star' : 'Click to add star'}">
+                            ${isFilled ? '<span class="star">⭐</span>' : ''}
+                        </div>
+                    `;
+                }
+            });
+
+            chartArea.innerHTML = `
+                <div class="chart-grid">
+                    ${headerRow}
+                    ${studentRows}
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            if (students.length === 0) return;
+
+            const totalStudents = students.length;
+            const totalStars = students.reduce((sum, s) => sum + s.getStars(), 0);
+            const averageStars = (totalStars / totalStudents).toFixed(1);
+            
+            const topStudent = students.reduce((top, student) => {
+                return student.getStars() > top.getStars() ? student : top;
+            });
+
+            document.getElementById('totalStudents').textContent = totalStudents;
+            document.getElementById('totalStars').textContent = totalStars;
+            document.getElementById('averageStars').textContent = averageStars;
+            document.getElementById('topPerformer').textContent = topStudent.getStars() > 0 ? topStudent.name : '-';
+        }
+
+        // Add shake animation for invalid input
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved data first
+            loadFromLocalStorage();
+            
+            // Set the correct session button as active
+            document.querySelectorAll('.session-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent.match(/\d+/)[0]) === currentSession) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Render the loaded data
+            renderChart();
+            updateStats();
+
+            const input = document.getElementById('studentNameInput');
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addStudent();
+                }
+            });
+
+            // Add some floating stars randomly
+            setInterval(() => {
+                const stars = document.querySelectorAll('.star-bg');
+                stars.forEach(star => {
+                    star.style.animationDelay = Math.random() * 6 + 's';
+                });
+            }, 10000);
+
+            // Show a welcome message if this is the first time using the app
+            if (students.length === 0) {
+                console.log('🌟 Welcome to Classroom Rewards Chart! Your data will be automatically saved.');
+            } else {
+                console.log(`🌟 Welcome back! Loaded ${students.length} students from your previous session.`);
+            }
+        });
+    </script>
+</body>
+</html>

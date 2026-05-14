@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In/On/At Practice Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .rules {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .rule-item {
+            margin: 5px 0;
+        }
+        .score {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .sentence-display {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #34495e;
+            margin: 40px 0;
+            min-height: 80px;
+            line-height: 1.4;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 3px dashed #bdc3c7;
+        }
+        .blank {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 8px;
+            margin: 0 5px;
+            display: inline-block;
+            min-width: 60px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 18px 35px;
+            font-size: 28px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 100px;
+        }
+        .btn-in {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .btn-on {
+            background: linear-gradient(45deg, #f39c12, #d68910);
+            color: white;
+        }
+        .btn-at {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        .btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        .feedback {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        .correct {
+            color: #27ae60;
+        }
+        .incorrect {
+            color: #e74c3c;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .control-btn {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        .control-btn:hover {
+            background: linear-gradient(45deg, #8e44ad, #732d91);
+            transform: translateY(-2px);
+        }
+        .progress {
+            text-align: center;
+            margin: 20px 0;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        .category {
+            background: #ecf0f1;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 10px 0;
+            font-size: 16px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎯 IN / ON / AT Practice Game</h1>
+        
+        <div class="rules">
+            <div class="rule-item"><strong>AT:</strong> specific points (at home, at 3pm, at the store)</div>
+            <div class="rule-item"><strong>ON:</strong> surfaces & days (on the table, on Monday, on Main Street)</div>
+            <div class="rule-item"><strong>IN:</strong> inside spaces & longer times (in the box, in January, in Thailand)</div>
+        </div>
+        
+        <div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+        <div class="progress">Question <span id="current">1</span> of <span id="totalQuestions">40</span></div>
+        
+        <div class="category" id="category">Click "Next Question" to start!</div>
+        
+        <div class="sentence-display" id="sentence">Ready to practice?</div>
+        
+        <div class="buttons">
+            <button class="btn btn-in" onclick="checkAnswer('in')">IN</button>
+            <button class="btn btn-on" onclick="checkAnswer('on')">ON</button>
+            <button class="btn btn-at" onclick="checkAnswer('at')">AT</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="nextQuestion()">Next Question</button>
+            <button class="control-btn" onclick="resetGame()">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // AT - specific points, times, places
+            {sentence: "I'll meet you ___ the bus stop", answer: "at", category: "Location (specific point)"},
+            {sentence: "The class starts ___ 9am", answer: "at", category: "Time (specific)"},
+            {sentence: "She's really good ___ math", answer: "at", category: "Skills"},
+            {sentence: "We arrived ___ the airport late", answer: "at", category: "Location (specific point)"},
+            {sentence: "I'm ___ work right now", answer: "at", category: "Location (general)"},
+            {sentence: "The party is ___ my house", answer: "at", category: "Location (specific point)"},
+            {sentence: "Let's eat ___ that restaurant", answer: "at", category: "Location (specific point)"},
+            {sentence: "I wake up ___ 6:30 every day", answer: "at", category: "Time (specific)"},
+            {sentence: "She's ___ home today", answer: "at", category: "Location (general)"},
+            {sentence: "We'll stop ___ the gas station", answer: "at", category: "Location (specific point)"},
+            
+            // ON - surfaces, days, streets
+            {sentence: "The book is ___ the table", answer: "on", category: "Surface"},
+            {sentence: "I have a meeting ___ Monday", answer: "on", category: "Days"},
+            {sentence: "She lives ___ Oak Street", answer: "on", category: "Streets"},
+            {sentence: "Put the cup ___ the counter", answer: "on", category: "Surface"},
+            {sentence: "We're going shopping ___ Saturday", answer: "on", category: "Days"},
+            {sentence: "The picture hangs ___ the wall", answer: "on", category: "Surface"},
+            {sentence: "I'll call you ___ Friday", answer: "on", category: "Days"},
+            {sentence: "The keys are ___ the desk", answer: "on", category: "Surface"},
+            {sentence: "They live ___ Main Street", answer: "on", category: "Streets"},
+            {sentence: "The meeting is ___ Wednesday", answer: "on", category: "Days"},
+            {sentence: "There's a spider ___ the ceiling", answer: "on", category: "Surface"},
+            {sentence: "I work ___ weekends", answer: "on", category: "Days"},
+            
+            // IN - enclosed spaces, months/years, countries/cities
+            {sentence: "The cat is ___ the box", answer: "in", category: "Enclosed space"},
+            {sentence: "My birthday is ___ December", answer: "in", category: "Months"},
+            {sentence: "We live ___ Thailand", answer: "in", category: "Countries"},
+            {sentence: "The milk is ___ the fridge", answer: "in", category: "Enclosed space"},
+            {sentence: "I was born ___ 1995", answer: "in", category: "Years"},
+            {sentence: "She studies ___ Bangkok", answer: "in", category: "Cities"},
+            {sentence: "The money is ___ my wallet", answer: "in", category: "Enclosed space"},
+            {sentence: "We'll travel ___ summer", answer: "in", category: "Seasons"},
+            {sentence: "He lives ___ Japan", answer: "in", category: "Countries"},
+            {sentence: "The clothes are ___ the closet", answer: "in", category: "Enclosed space"},
+            {sentence: "School starts ___ September", answer: "in", category: "Months"},
+            {sentence: "I'll be there ___ the morning", answer: "in", category: "Parts of day"},
+            {sentence: "The fish swim ___ the ocean", answer: "in", category: "Large spaces"},
+            {sentence: "We moved here ___ 2020", answer: "in", category: "Years"},
+            {sentence: "She works ___ New York", answer: "in", category: "Cities"},
+            {sentence: "The food is ___ the oven", answer: "in", category: "Enclosed space"},
+            {sentence: "I feel cold ___ winter", answer: "in", category: "Seasons"},
+            {sentence: "The bird is ___ the cage", answer: "in", category: "Enclosed space"},
+            {sentence: "We'll meet ___ the afternoon", answer: "in", category: "Parts of day"},
+            {sentence: "He was born ___ Canada", answer: "in", category: "Countries"}
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+        let shuffledQuestions = [...questions];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function updateDisplay() {
+            const question = shuffledQuestions[currentIndex];
+            document.getElementById('sentence').innerHTML = question.sentence.replace('___', '<span class="blank">?</span>');
+            document.getElementById('category').textContent = question.category;
+            document.getElementById('current').textContent = currentIndex + 1;
+            document.getElementById('totalQuestions').textContent = shuffledQuestions.length;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex;
+            document.getElementById('feedback').textContent = '';
+            answered = false;
+        }
+
+        function checkAnswer(selectedPreposition) {
+            if (answered) return;
+            
+            const correctAnswer = shuffledQuestions[currentIndex].answer;
+            const feedbackDiv = document.getElementById('feedback');
+            const sentence = shuffledQuestions[currentIndex].sentence;
+            
+            if (selectedPreposition === correctAnswer) {
+                score++;
+                feedbackDiv.textContent = '✅ Correct!';
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                const correctSentence = sentence.replace('___', correctAnswer.toUpperCase());
+                feedbackDiv.textContent = `❌ Wrong! Correct: "${correctSentence}"`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+            
+            // Show the answer in the sentence
+            document.getElementById('sentence').innerHTML = sentence.replace('___', `<span class="blank" style="background: ${selectedPreposition === correctAnswer ? '#27ae60' : '#e74c3c'}">${correctAnswer.toUpperCase()}</span>`);
+            
+            answered = true;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentIndex + 1;
+        }
+
+        function nextQuestion() {
+            if (currentIndex < shuffledQuestions.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            } else {
+                document.getElementById('sentence').textContent = 'Game Complete! 🎉';
+                document.getElementById('category').textContent = `Final Score: ${score}/${shuffledQuestions.length}`;
+                document.getElementById('feedback').textContent = `${Math.round((score/shuffledQuestions.length)*100)}% Correct!`;
+                document.getElementById('feedback').className = 'feedback';
+            }
+        }
+
+        function resetGame() {
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            shuffledQuestions = shuffleArray([...questions]);
+            updateDisplay();
+        }
+
+        // Initialize game
+        shuffledQuestions = shuffleArray([...questions]);
+        updateDisplay();
+    </script>
+</body>
+</html>
