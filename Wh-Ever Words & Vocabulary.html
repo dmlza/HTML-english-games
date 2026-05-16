@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wh-Ever Words & Vocabulary Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #1e3a1e;
+    --green-mid: #2d5a27;
+    --green-light: #4a8a40;
+    --green-pale: #e8f0e6;
+    --cream: #faf7f0;
+    --warm-white: #ffffff;
+    --gold: #c8a84b;
+    --gold-light: #f0e4b8;
+    --text-dark: #1a1a1a;
+    --text-mid: #3d3d3d;
+    --text-light: #6b6b6b;
+    --red-soft: #c0392b;
+    --correct: #2d7a4f;
+    --correct-bg: #e6f4ed;
+    --wrong: #8b2c2c;
+    --wrong-bg: #faeaea;
+    --radius: 10px;
+    --shadow: 0 4px 20px rgba(30,58,30,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--green-dark);
+    color: white;
+    padding: 28px 40px 20px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.02em;
+    color: var(--gold);
+  }
+  header p { font-size: 0.82rem; color: #aac8a0; margin-top: 3px; }
+
+  /* ── Tab Nav ── */
+  nav {
+    background: var(--green-mid);
+    display: flex; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav button {
+    background: none; border: none; color: #c8e0c4;
+    padding: 12px 22px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500; cursor: pointer;
+    white-space: nowrap; border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  nav button:hover { color: white; background: rgba(255,255,255,0.08); }
+  nav button.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* ── Layout ── */
+  main { max-width: 820px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    color: var(--green-dark);
+    margin-bottom: 6px;
+  }
+  .section-subtitle {
+    font-family: 'Lora', serif;
+    font-size: 0.92rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #d8e4d4;
+  }
+
+  /* ── Reference Card ── */
+  .ref-card {
+    background: var(--green-dark);
+    color: white;
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    margin-bottom: 32px;
+  }
+  .ref-card h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+  }
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .ref-item {
+    background: rgba(255,255,255,0.07);
+    border-radius: 7px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--gold);
+  }
+  .ref-item strong { color: var(--gold); font-size: 0.95rem; display: block; margin-bottom: 3px; }
+  .ref-item span { font-size: 0.78rem; color: #b8d4b0; }
+  .ref-item em { display: block; font-size: 0.75rem; color: #8aaa84; margin-top: 2px; font-style: italic; }
+
+  /* ── Question Card ── */
+  .q-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid #e4ede0;
+  }
+  .q-number {
+    display: inline-block;
+    background: var(--green-dark);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    text-align: center; line-height: 28px;
+    margin-right: 10px; float: left;
+  }
+  .q-text {
+    font-family: 'Lora', serif;
+    font-size: 0.97rem;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .blank {
+    display: inline-block;
+    border-bottom: 2px solid var(--green-mid);
+    min-width: 90px;
+    color: transparent;
+    user-select: none;
+  }
+
+  /* MCQ options */
+  .options { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .option {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #c8dcc4;
+    background: var(--green-pale);
+    font-size: 0.85rem;
+    color: var(--text-mid);
+  }
+  .option strong { color: var(--green-dark); margin-right: 4px; }
+
+  /* Reveal Button */
+  .reveal-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: none;
+    border: 1.5px solid var(--green-mid);
+    color: var(--green-mid);
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reveal-btn:hover {
+    background: var(--green-mid);
+    color: white;
+  }
+  .reveal-btn .icon { font-size: 0.9rem; transition: transform 0.3s; }
+  .reveal-btn.open .icon { transform: rotate(180deg); }
+
+  /* Answer Panel */
+  .answer-panel {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+  .answer-panel.open {
+    max-height: 500px;
+    opacity: 1;
+  }
+  .answer-inner {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border-left: 4px solid var(--correct);
+    background: var(--correct-bg);
+  }
+  .answer-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--correct);
+    margin-bottom: 4px;
+  }
+  .answer-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+  }
+  .answer-why {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-mid);
+  }
+  .answer-why strong { color: var(--green-dark); }
+
+  /* Wrong options explanation */
+  .wrong-list { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .wrong-item {
+    font-size: 0.8rem;
+    color: var(--wrong);
+    padding: 5px 10px;
+    background: var(--wrong-bg);
+    border-radius: 5px;
+  }
+  .wrong-item strong { color: var(--red-soft); }
+
+  /* Conversation exercise */
+  .convo-line {
+    display: flex; gap: 12px; padding: 8px 0;
+    border-bottom: 1px solid #eef2ec;
+    align-items: flex-start;
+  }
+  .convo-speaker {
+    font-weight: 500; font-size: 0.85rem;
+    color: var(--green-mid); min-width: 54px;
+    padding-top: 2px;
+  }
+  .convo-text {
+    font-family: 'Lora', serif;
+    font-size: 0.93rem; line-height: 1.6;
+    color: var(--text-dark); flex: 1;
+  }
+
+  /* Speaking section */
+  .speak-intro {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.93rem;
+    color: var(--text-mid);
+    margin-bottom: 18px;
+    padding: 14px 18px;
+    background: var(--gold-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--gold);
+  }
+  .scenario-list { display: flex; flex-direction: column; gap: 12px; }
+  .scenario-item {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid #e4ede0;
+  }
+  .scenario-item .s-label {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-light); margin-bottom: 6px;
+  }
+  .scenario-item .s-text {
+    font-family: 'Lora', serif; font-size: 0.95rem;
+    font-weight: 500; color: var(--green-dark); margin-bottom: 12px;
+  }
+
+  /* Tip box */
+  .tip-box {
+    background: var(--gold-light);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border-left: 4px solid var(--gold);
+    font-size: 0.87rem;
+    line-height: 1.6;
+    color: var(--text-mid);
+  }
+  .tip-box strong { color: var(--green-dark); display: block; margin-bottom: 4px; }
+
+  @media (max-width: 600px) {
+    header { padding: 20px 20px 14px; }
+    header h1 { font-size: 1.3rem; }
+    main { padding: 24px 16px 60px; }
+    nav button { padding: 10px 16px; font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Wh-Ever Words & Vocabulary</h1>
+  <p>Interactive Answer Key — click "Reveal Answer" on each question</p>
+</header>
+
+<nav id="tabs">
+  <button class="active" onclick="showSection('warmup')">☀️ Warm Up</button>
+  <button onclick="showSection('ref')">📌 -Ever Guide</button>
+  <button onclick="showSection('vocab')">📝 Vocabulary 2</button>
+  <button onclick="showSection('grammar')">🔤 Grammar 2</button>
+  <button onclick="showSection('convo')">💬 Conversation</button>
+  <button onclick="showSection('vocabwords')">📚 Vocabulary</button>
+  <button onclick="showSection('speaking')">🗣️ Speaking</button>
+  <button onclick="showSection('discussion')">💭 Discussion</button>
+  <button onclick="showSection('hypothetical')">🎲 Would You Rather</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 0 — WARM UP
+═══════════════════════════════════════════ -->
+<div id="warmup" class="section active">
+  <h2 class="section-title">Warm Up ☀️</h2>
+  <p class="section-subtitle">Get the conversation started before we dive in. No right or wrong answers here!</p>
+
+  <div class="tip-box" style="margin-bottom:28px">
+    <strong>🎯 Teacher Note</strong>
+    Give students 2–3 minutes to think, then share with a partner before opening to the class. These are designed to activate background knowledge and get students comfortable speaking.
+  </div>
+
+  <div class="scenario-list">
+
+    <div class="scenario-item">
+      <div class="s-label">Warm-Up Question 1</div>
+      <div class="s-text">Think of a time you had to do something nerve-wracking for the first time. What was it? How did you feel before, during, and after?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Answer</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Example</div>
+          <div class="answer-why">
+            <em>"The first time I had to speak in front of my whole class, I was terrified. My hands were shaking and I kept forgetting what I wanted to say. But afterward, I actually felt really proud — it wasn't as bad as I imagined."</em>
+            <br><br>💬 <strong>Follow-up prompts:</strong> Did it get easier the second time? What helped you get through it?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Warm-Up Question 2</div>
+      <div class="s-text">If you had to choose between these two situations, which would make you more nervous — and why?<br><br>
+        🎤 Giving a speech to 100 strangers &nbsp;&nbsp;<strong>OR</strong>&nbsp;&nbsp; 🍽️ Having dinner with your partner's parents for the first time
+      </div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Discussion Points</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Things to Think About</div>
+          <div class="answer-why">
+            <strong>Speech:</strong> One-way pressure — you just perform. Strangers have no long-term impact on your life.<br><br>
+            <strong>Partner's parents:</strong> Two-way interaction — they ask questions, judge you, AND you'll probably see them again for years. Higher personal stakes!<br><br>
+            💬 <strong>Language to encourage:</strong> <em>"I'd rather… because…"</em> / <em>"For me, the scariest part would be…"</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Warm-Up Question 3</div>
+      <div class="s-text">What's one piece of advice you'd give to someone who always worries too much about what other people think?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Answer</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Example</div>
+          <div class="answer-why">
+            <em>"I'd tell them that most people are too busy thinking about themselves to notice your mistakes. And <strong>whoever</strong> judges you harshly probably isn't someone whose opinion matters anyway."</em>
+            <br><br>💡 <em>Notice the Wh-ever word snuck in there — a nice preview of today's grammar!</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — -EVER REFERENCE GUIDE
+═══════════════════════════════════════════ -->
+<div id="ref" class="section">
+  <h2 class="section-title">The Wh-Ever Words</h2>
+  <p class="section-subtitle">Use these words to mean "it doesn't matter which / who / where / when / how / what" — they express total openness or indifference.</p>
+
+  <div class="ref-card">
+    <h3>Quick Reference</h3>
+    <div class="ref-grid">
+      <div class="ref-item">
+        <strong>Whatever</strong>
+        <span>Thing / action / idea</span>
+        <em>"Whatever you say will be fine."</em>
+      </div>
+      <div class="ref-item">
+        <strong>Whoever</strong>
+        <span>Person</span>
+        <em>"Whoever calls, I'm busy."</em>
+      </div>
+      <div class="ref-item">
+        <strong>Wherever</strong>
+        <span>Place / location</span>
+        <em>"Wherever you go, I'll follow."</em>
+      </div>
+      <div class="ref-item">
+        <strong>Whenever</strong>
+        <span>Time</span>
+        <em>"Whenever you're ready, let's go."</em>
+      </div>
+      <div class="ref-item">
+        <strong>However</strong>
+        <span>Manner / way</span>
+        <em>"However you do it is fine."</em>
+      </div>
+      <div class="ref-item">
+        <strong>Whichever</strong>
+        <span>Choosing from a set of options</span>
+        <em>"Whichever seat you like."</em>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>🔑 The Key Question to Ask</strong>
+    Ask yourself: <em>what is the blank referring to?</em><br>
+    A <strong>person</strong>? → <strong>Whoever</strong> &nbsp;|&nbsp;
+    A <strong>place</strong>? → <strong>Wherever</strong> &nbsp;|&nbsp;
+    A <strong>time</strong>? → <strong>Whenever</strong><br>
+    A <strong>thing/idea</strong>? → <strong>Whatever</strong> &nbsp;|&nbsp;
+    A <strong>way/method</strong>? → <strong>However</strong> &nbsp;|&nbsp;
+    <strong>Picking from options</strong>? → <strong>Whichever</strong>
+  </div>
+
+  <div class="tip-box">
+    <strong>⚠️ Whatever vs. Whichever</strong>
+    Both refer to things, but <strong>Whichever</strong> implies a <em>limited set of choices</em> is available ("whichever shirt" = new one or old one). <strong>Whatever</strong> implies <em>no limit at all</em> ("whatever you say" = anything at all).
+  </div>
+
+  <div class="tip-box">
+    <strong>⚠️ However ≠ "but"</strong>
+    In this grammar, <strong>however</strong> means "in whatever way / no matter how" — it is NOT the linking word meaning "but/nevertheless". Compare:<br>
+    ✅ <em>"However you dress, you'll look great."</em> (= no matter how)<br>
+    ✅ <em>"I was tired. However, I finished."</em> (= but / linking word — different use!)
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — VOCABULARY 2
+═══════════════════════════════════════════ -->
+<div id="vocab" class="section">
+  <h2 class="section-title">Vocabulary 2</h2>
+  <p class="section-subtitle">Choose the answer that best completes each sentence. Use the vocabulary box as your guide.</p>
+
+  <!-- Q1 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">1</span>My boss asked me to <span class="blank">________</span> some of the new employees how to use our computers.</div>
+    <div class="options">
+      <span class="option"><strong>a</strong> explain</span>
+      <span class="option"><strong>b</strong> train</span>
+      <span class="option"><strong>c</strong> describe</span>
+      <span class="option"><strong>d</strong> notice</span>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">b — train</div>
+        <div class="answer-why">The vocabulary box includes the phrase <strong>"train some new employees"</strong> as a fixed expression. "Train" means to teach someone a specific skill for a job — exactly what a boss asks when introducing new staff to company systems.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>a – explain:</strong> You explain facts or ideas, but not people. You can't "explain employees".</div>
+          <div class="wrong-item"><strong>c – describe:</strong> Means to give details about appearance or characteristics — wrong action here.</div>
+          <div class="wrong-item"><strong>d – notice:</strong> Means to observe/see something — completely wrong grammar and meaning here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">2</span>Whatever you do, don't attend a high school <span class="blank">________</span> and expect everyone to look exactly the same.</div>
+    <div class="options">
+      <span class="option"><strong>a</strong> organization</span>
+      <span class="option"><strong>b</strong> placement</span>
+      <span class="option"><strong>c</strong> registration</span>
+      <span class="option"><strong>d</strong> reunion</span>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">d — reunion</div>
+        <div class="answer-why">The vocabulary box lists <strong>"attend a high school reunion"</strong> — a reunion is an event where people who went to school together meet again after years apart. The sentence's context (people have changed since school) perfectly matches this word.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>a – organization:</strong> Refers to a group/company structure — not an event you attend.</div>
+          <div class="wrong-item"><strong>b – placement:</strong> A test to determine your level (e.g., placement exam) — unrelated here.</div>
+          <div class="wrong-item"><strong>c – registration:</strong> The process of signing up — not the right event noun.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">3</span>How does the audience usually react when you give a <span class="blank">________</span> at a sales meeting?</div>
+    <div class="options">
+      <span class="option"><strong>a</strong> presentation</span>
+      <span class="option"><strong>b</strong> presenter</span>
+      <span class="option"><strong>c</strong> present</span>
+      <span class="option"><strong>d</strong> prescription</span>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">a — presentation</div>
+        <div class="answer-why">From the vocabulary box: <strong>"give a presentation at a sales meeting"</strong>. A presentation is the noun form of the act of presenting. "Give a presentation" is the natural fixed phrase in English.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>b – presenter:</strong> A <em>person</em> who presents — you can't "give a presenter".</div>
+          <div class="wrong-item"><strong>c – present:</strong> Either a gift or a verb — "give a present" means giving a gift, not a business talk.</div>
+          <div class="wrong-item"><strong>d – prescription:</strong> A medical/pharmacy term — completely unrelated to sales meetings.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">4</span>Wherever you <span class="blank">________</span> with your boyfriend, it's going to be uncomfortable.</div>
+    <div class="options">
+      <span class="option"><strong>a</strong> break up</span>
+      <span class="option"><strong>b</strong> break down</span>
+      <span class="option"><strong>c</strong> break out</span>
+      <span class="option"><strong>d</strong> break apart</span>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">a — break up</div>
+        <div class="answer-why">The vocabulary box lists <strong>"break up with someone"</strong> — the standard phrasal verb for ending a romantic relationship. The sentence context (boyfriend, uncomfortable) confirms this is about ending a relationship.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>b – break down:</strong> Means to stop functioning (car breaks down) or to cry/collapse emotionally — not "end a relationship".</div>
+          <div class="wrong-item"><strong>c – break out:</strong> Means to escape, or for something to suddenly start (war breaks out, acne breaks out).</div>
+          <div class="wrong-item"><strong>d – break apart:</strong> Not a standard fixed phrasal verb in this context — it means to physically fall into pieces.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">5</span>Would you rather <span class="blank">________</span> in a play or see one as an audience member?</div>
+    <div class="options">
+      <span class="option"><strong>a</strong> present</span>
+      <span class="option"><strong>b</strong> perform</span>
+      <span class="option"><strong>c</strong> attend</span>
+      <span class="option"><strong>d</strong> train</span>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">b — perform</div>
+        <div class="answer-why">From the vocabulary box: <strong>"perform in a play"</strong>. The sentence itself gives the contrast: performing (acting on stage) vs. watching as an audience member. "Perform in" is the fixed collocation for acting in a theatrical production.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>a – present:</strong> "Present in a play" is not a natural phrase — presents are gifts, or you present data/awards.</div>
+          <div class="wrong-item"><strong>c – attend:</strong> Attend means to go and watch — which is exactly what the audience member does. The question sets these as opposites, so "attend" would create a contradiction.</div>
+          <div class="wrong-item"><strong>d – train:</strong> You train employees, not in plays.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — GRAMMAR 2
+═══════════════════════════════════════════ -->
+<div id="grammar" class="section">
+  <h2 class="section-title">Grammar 2</h2>
+  <p class="section-subtitle">Choose the correct Wh-word. Ask yourself: <em>what type of thing does the blank refer to?</em></p>
+
+  <!-- G1 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">1</span>[However / <strong>Whatever</strong> / Whenever] my son wants to be in the future is fine with us.</div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">Whatever</div>
+        <div class="answer-why">The blank refers to a <strong>thing / role / career</strong> — "a doctor, a teacher, an artist…" That's a <em>thing</em>, so we use <strong>Whatever</strong>. The whole clause "Whatever my son wants to be" acts as the subject of the sentence.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>However:</strong> Refers to <em>manner/method</em> — "in whatever way". Doesn't fit here (his future career isn't a method).</div>
+          <div class="wrong-item"><strong>Whenever:</strong> Refers to <em>time</em>. The sentence isn't about when — it's about what he becomes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G2 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">2</span>[<strong>Whichever</strong> / Wherever / Whoever] university you choose to go to will be great!</div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">Whichever</div>
+        <div class="answer-why">The person is choosing a university from a <strong>limited set of options</strong> they're considering. <strong>Whichever</strong> is used when selecting from a defined group of choices — "whichever university" implies there are a few on the table.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>Wherever:</strong> Refers to <em>place</em>. A university isn't a location being chosen — it's an institution (an option).</div>
+          <div class="wrong-item"><strong>Whoever:</strong> Refers to <em>a person</em>. A university is not a person.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G3 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">3</span>[Whatever / However / <strong>Whenever</strong>] you decide to give your notice to the company, let me know.</div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">Whenever</div>
+        <div class="answer-why">The blank refers to <strong>time</strong> — "let me know when you decide (at any point in the future)." <strong>Whenever</strong> = "at whatever time." The sentence is about timing the decision, not what the decision is or how it's made.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>Whatever:</strong> Would make it about the <em>thing/action</em> decided — "whatever you decide to give" — which changes and distorts the meaning.</div>
+          <div class="wrong-item"><strong>However:</strong> Refers to <em>manner</em> — how you give notice. But "let me know" suggests they care about timing, not method.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G4 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">4</span>[Whatever / <strong>However</strong> / Whenever] you choose to go there, it's going to take a long time.</div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">However</div>
+        <div class="answer-why">The blank refers to <strong>method/manner of travel</strong> — plane, bus, car, train… "In whatever way you travel, it will take long." <strong>However</strong> = "in whatever way / no matter how." The focus is on the mode of getting there.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>Whatever:</strong> Would refer to a <em>thing</em>. "Whatever you choose to go there" is slightly awkward — "go there" implies movement method, not a thing to choose.</div>
+          <div class="wrong-item"><strong>Whenever:</strong> Refers to <em>time</em>. The sentence isn't about when the trip happens — it's about the method.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G5 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">5</span>[<strong>Whoever</strong> / Whichever / Whatever] you marry is your business.</div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">Whoever</div>
+        <div class="answer-why">You marry a <strong>person</strong>. <strong>Whoever</strong> = "any person / no matter who." The clause "Whoever you marry" = "any person you choose to marry." Always use Whoever when the blank refers to a human being.</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>Whichever:</strong> Used for choosing between a set of non-person options. People aren't "options in a set" in this context.</div>
+          <div class="wrong-item"><strong>Whatever:</strong> Refers to things/ideas — not people. Using "whatever" for a person sounds dehumanizing and is grammatically wrong here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G6 -->
+  <div class="q-card">
+    <div class="q-text"><span class="q-number">6</span>[Whatever / Whoever / <strong>Wherever</strong>] you go I'll follow.</div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal Answer</button>
+    <div class="answer-panel">
+      <div class="answer-inner">
+        <div class="answer-label">✓ Correct Answer</div>
+        <div class="answer-main">Wherever</div>
+        <div class="answer-why">The blank refers to a <strong>place</strong> — "no matter which city / country / location you go to." <strong>Wherever</strong> = "in / to whatever place." "You go" is a movement verb, which confirms we're talking about a destination (place).</div>
+        <div class="wrong-list">
+          <div class="wrong-item"><strong>Whatever:</strong> Refers to <em>things</em>. "Whatever you go" is grammatically incorrect — you go to a place, not a thing.</div>
+          <div class="wrong-item"><strong>Whoever:</strong> Refers to <em>people</em>. "You go" does not refer to a person.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — CONVERSATION
+═══════════════════════════════════════════ -->
+<div id="convo" class="section">
+  <h2 class="section-title">Conversation Fill-in</h2>
+  <p class="section-subtitle">Complete the conversation with the correct Wh-ever word: <em>whenever, however, whoever, whatever, whichever.</em></p>
+
+  <div class="q-card" style="padding: 10px 16px;">
+    <div class="convo-line"><span class="convo-speaker">Kelly</span><span class="convo-text">Lucas! Hi! How are you?</span></div>
+    <div class="convo-line"><span class="convo-speaker">Lucas</span><span class="convo-text">Honestly? I'm nervous. I'm meeting my partner's parents this evening.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Kelly</span><span class="convo-text">That's exciting.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Lucas</span><span class="convo-text">I'm not looking forward to it. What if they don't like me? I'm worried that I'll say something wrong.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Kelly</span><span class="convo-text">Don't worry. <span style="background:#d4edda;padding:1px 8px;border-radius:4px;font-weight:600;color:#1e3a1e;">¹ ___</span> you say will be great.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Lucas</span><span class="convo-text">I'm serious, Kelly, this is a big deal. I even bought a new shirt for this evening.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Kelly</span><span class="convo-text">You're funny. New shirt or old shirt… <span style="background:#d4edda;padding:1px 8px;border-radius:4px;font-weight:600;color:#1e3a1e;">² ___</span> shirt you wear will be OK.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Lucas</span><span class="convo-text">I don't believe that.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Kelly</span><span class="convo-text">Listen. It's normal to be nervous <span style="background:#d4edda;padding:1px 8px;border-radius:4px;font-weight:600;color:#1e3a1e;">³ ___</span> you meet someone for the first time.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Lucas</span><span class="convo-text">So you're saying <span style="background:#d4edda;padding:1px 8px;border-radius:4px;font-weight:600;color:#1e3a1e;">⁴ ___</span> I dress or <span style="background:#d4edda;padding:1px 8px;border-radius:4px;font-weight:600;color:#1e3a1e;">⁵ ___</span> I say won't make a difference.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Kelly</span><span class="convo-text">I'm saying that they're probably nervous about meeting you, too.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Lucas</span><span class="convo-text">What?</span></div>
+    <div class="convo-line"><span class="convo-speaker">Kelly</span><span class="convo-text"><span style="background:#d4edda;padding:1px 8px;border-radius:4px;font-weight:600;color:#1e3a1e;">⁶ ___</span> you meet will like you… if you don't try to be someone else.</span></div>
+    <div class="convo-line"><span class="convo-speaker">Lucas</span><span class="convo-text">So just be myself.</span></div>
+    <div class="convo-line" style="border:none"><span class="convo-speaker">Kelly</span><span class="convo-text">Exactly. Just be Lucas.</span></div>
+  </div>
+
+  <button class="reveal-btn" style="margin-top:16px" onclick="toggleAnswer(this)"><span class="icon">▼</span> Reveal All Answers</button>
+  <div class="answer-panel">
+    <div class="answer-inner">
+      <div class="answer-label">✓ All Answers</div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+
+        <div style="padding:10px 12px;background:white;border-radius:7px;border-left:3px solid var(--green-mid)">
+          <div style="font-family:'Playfair Display',serif;color:var(--green-dark);font-size:1rem">¹ Whatever</div>
+          <div class="answer-why">Refers to a <strong>thing/words</strong> Lucas might say — "any thing you say." No limit on what the thing is → Whatever.</div>
+        </div>
+
+        <div style="padding:10px 12px;background:white;border-radius:7px;border-left:3px solid var(--green-mid)">
+          <div style="font-family:'Playfair Display',serif;color:var(--green-dark);font-size:1rem">² Whichever</div>
+          <div class="answer-why">Kelly just listed <strong>two specific options</strong>: "new shirt or old shirt." When choosing between a defined set → Whichever.</div>
+        </div>
+
+        <div style="padding:10px 12px;background:white;border-radius:7px;border-left:3px solid var(--green-mid)">
+          <div style="font-family:'Playfair Display',serif;color:var(--green-dark);font-size:1rem">³ Whenever</div>
+          <div class="answer-why">Refers to <strong>time</strong> — "at any point when you meet someone new." Movement + time context → Whenever.</div>
+        </div>
+
+        <div style="padding:10px 12px;background:white;border-radius:7px;border-left:3px solid var(--green-mid)">
+          <div style="font-family:'Playfair Display',serif;color:var(--green-dark);font-size:1rem">⁴ However</div>
+          <div class="answer-why">"However I dress" = <strong>in whatever manner/way I dress</strong>. The verb "dress" is about method/manner → However.</div>
+        </div>
+
+        <div style="padding:10px 12px;background:white;border-radius:7px;border-left:3px solid var(--green-mid)">
+          <div style="font-family:'Playfair Display',serif;color:var(--green-dark);font-size:1rem">⁵ Whatever</div>
+          <div class="answer-why">"Whatever I say" = <strong>any words / thing I say</strong>. Refers to the content of speech (a thing) → Whatever.</div>
+        </div>
+
+        <div style="padding:10px 12px;background:white;border-radius:7px;border-left:3px solid var(--green-mid)">
+          <div style="font-family:'Playfair Display',serif;color:var(--green-dark);font-size:1rem">⁶ Whoever</div>
+          <div class="answer-why">"Whoever you meet" = <strong>any person you meet</strong>. Refers to the parents/people → Whoever (always for people).</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — SPEAKING
+═══════════════════════════════════════════ -->
+<div id="speaking" class="section">
+  <h2 class="section-title">Speaking Practice</h2>
+  <p class="section-subtitle">Practice giving encouragement. Use Wh-ever words naturally in your responses!</p>
+
+  <div class="speak-intro">
+    💡 <strong>Tip for students:</strong> Try to use at least one Wh-ever word when giving encouragement. For example: <em>"Whatever happens, you'll do great!"</em> or <em>"Whoever interviews you will be impressed."</em>
+  </div>
+
+  <div class="scenario-list">
+
+    <div class="scenario-item">
+      <div class="s-label">Scenario 1</div>
+      <div class="s-text">😰 Your friend is nervous about quitting a stressful job.</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Encouragement</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Example Response</div>
+          <div class="answer-why">
+            <em>"Whatever happens after you quit, you'll find something better. <strong>Whenever</strong> you're ready to make the move, I'll support you. No job is worth your health!"</em>
+            <br><br>🔑 <strong>Whatever</strong> (thing = outcomes) + <strong>Whenever</strong> (time = when they're ready)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Scenario 2</div>
+      <div class="s-text">😰 Your friend has to give a speech in front of a large group.</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Encouragement</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Example Response</div>
+          <div class="answer-why">
+            <em>"<strong>Whatever</strong> you say up there, the audience will appreciate your effort. <strong>However</strong> nervous you feel, just breathe and speak from the heart."</em>
+            <br><br>🔑 <strong>Whatever</strong> (thing = words spoken) + <strong>However</strong> (manner = how nervous)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Scenario 3</div>
+      <div class="s-text">😰 Your colleague is presenting the annual sales report at a meeting.</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Encouragement</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Example Response</div>
+          <div class="answer-why">
+            <em>"<strong>Whoever</strong> is in that room will be impressed. You know this data better than anyone. <strong>However</strong> the questions come, you'll handle them."</em>
+            <br><br>🔑 <strong>Whoever</strong> (people = the audience) + <strong>However</strong> (manner = how questions are asked)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Scenario 4</div>
+      <div class="s-text">😰 Your manager has to fire 20 employees because sales have decreased.</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Encouragement</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Example Response</div>
+          <div class="answer-why">
+            <em>"This isn't your fault. <strong>Whatever</strong> decision you make, do it with kindness. <strong>Whoever</strong> you have to let go, treat them with respect — that's what they'll remember."</em>
+            <br><br>🔑 <strong>Whatever</strong> (thing = the decision) + <strong>Whoever</strong> (people = the employees)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Scenario 5</div>
+      <div class="s-text">😰 Your friend is nervous about attending their high school reunion.</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Encouragement</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Example Response</div>
+          <div class="answer-why">
+            <em>"<strong>Whoever</strong> you run into there, just be yourself. <strong>Whatever</strong> they think about how you look now doesn't matter — you're happy, and that shows."</em>
+            <br><br>🔑 <strong>Whoever</strong> (people = old classmates) + <strong>Whatever</strong> (thing = their opinions)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Scenario 6</div>
+      <div class="s-text">😰 Your friend is nervous about meeting their partner's parents for the first time.</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Encouragement</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Example Response</div>
+          <div class="answer-why">
+            <em>"<strong>Whoever</strong> they are, they raised someone amazing — and that means they're good people. <strong>Whatever</strong> you say tonight, just be honest and warm. They'll love you."</em>
+            <br><br>🔑 <strong>Whoever</strong> (people = the parents) + <strong>Whatever</strong> (thing = what is said)
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6 — VOCABULARY
+═══════════════════════════════════════════ -->
+<div id="vocabwords" class="section">
+  <h2 class="section-title">Vocabulary 📚</h2>
+  <p class="section-subtitle">Key words and phrases from today's lesson. Read the meaning and example, then write your own sentence!</p>
+
+  <div class="tip-box">
+    <strong>🎯 Your Task</strong>
+    After reading each card, write your own sentence using the word or phrase. Try to connect it to something real in your life!
+  </div>
+
+  <style>
+    .vocab-card {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid #e4ede0;
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .vocab-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .vocab-header:hover { background: var(--green-pale); }
+    .vocab-tag {
+      font-size: 0.7rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 3px 9px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .tag-phrase { background: #d4e8ff; color: #1a4a7a; }
+    .tag-verb   { background: #fde8d4; color: #7a3a1a; }
+    .tag-noun   { background: #e8d4fd; color: #4a1a7a; }
+    .tag-adj    { background: #d4fde8; color: #1a7a4a; }
+    .tag-idiom  { background: #fdfdd4; color: #7a7a1a; }
+    .vocab-word {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--green-dark);
+      flex: 1;
+    }
+    .vocab-chevron { color: var(--text-light); font-size: 0.85rem; transition: transform 0.3s; }
+    .vocab-card.open .vocab-chevron { transform: rotate(180deg); }
+    .vocab-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s;
+      opacity: 0;
+    }
+    .vocab-card.open .vocab-body { max-height: 400px; opacity: 1; }
+    .vocab-inner { padding: 0 20px 18px; border-top: 1px solid #e4ede0; }
+    .vocab-meaning {
+      font-size: 0.88rem; line-height: 1.6;
+      color: var(--text-mid); margin: 12px 0 8px;
+    }
+    .vocab-meaning strong { color: var(--green-dark); }
+    .vocab-example {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 0.9rem; line-height: 1.6;
+      color: var(--text-dark);
+      padding: 8px 14px;
+      background: var(--green-pale);
+      border-left: 3px solid var(--green-mid);
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 12px;
+    }
+    .vocab-prompt {
+      font-size: 0.8rem; font-weight: 500;
+      color: var(--gold);
+      background: var(--gold-light);
+      padding: 7px 12px; border-radius: 6px;
+      display: inline-block;
+    }
+  </style>
+
+  <!-- 1 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-adj">adjective</span>
+      <span class="vocab-word">nervous</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> Feeling anxious, worried, or uneasy about something that might happen.</div>
+      <div class="vocab-example">"I'm nervous. I'm meeting my partner's parents this evening."</div>
+      <span class="vocab-prompt">✍️ Your turn: When do you usually feel nervous?</span>
+    </div></div>
+  </div>
+
+  <!-- 2 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-phrase">phrase</span>
+      <span class="vocab-word">not look forward to (something)</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> To feel no excitement or even dread about a future event. The opposite of "look forward to." Often used when something feels like an obligation.</div>
+      <div class="vocab-example">"I'm not looking forward to it. What if they don't like me?"</div>
+      <span class="vocab-prompt">✍️ Your turn: Is there anything coming up that you're not looking forward to?</span>
+    </div></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-idiom">idiom</span>
+      <span class="vocab-word">a big deal</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> Something very important or significant. Often used to emphasise how seriously someone takes a situation — or sarcastically, to say it <em>isn't</em> important.</div>
+      <div class="vocab-example">"I'm serious, Kelly, this is a big deal. I even bought a new shirt for this evening."</div>
+      <span class="vocab-prompt">✍️ Your turn: What's something that felt like a big deal to you recently?</span>
+    </div></div>
+  </div>
+
+  <!-- 4 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-verb">phrasal verb</span>
+      <span class="vocab-word">run into (someone)</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> To meet someone unexpectedly and by chance — you didn't plan it. Common in everyday speech.</div>
+      <div class="vocab-example">"Kelly is shopping in the supermarket when she runs into her friend Lucas."</div>
+      <span class="vocab-prompt">✍️ Your turn: Have you ever run into someone unexpectedly? What happened?</span>
+    </div></div>
+  </div>
+
+  <!-- 5 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-phrase">phrase</span>
+      <span class="vocab-word">make a good impression</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> To cause someone to think well of you — often when meeting for the first time. You can also "make a bad impression" or "make a lasting impression."</div>
+      <div class="vocab-example">"I get most nervous when I want to make a good impression on someone new."</div>
+      <span class="vocab-prompt">✍️ Your turn: Think of a time you really wanted to make a good impression. Did it go well?</span>
+    </div></div>
+  </div>
+
+  <!-- 6 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-verb">verb</span>
+      <span class="vocab-word">calm (someone) down</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> To become less upset, anxious, or excited — or to help someone else do this. Can be used reflexively: "I calmed myself down."</div>
+      <div class="vocab-example">"I try to take deep breaths to calm myself down when I feel anxious."</div>
+      <span class="vocab-prompt">✍️ Your turn: What do you do to calm yourself down when you're stressed?</span>
+    </div></div>
+  </div>
+
+  <!-- 7 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-phrase">phrase</span>
+      <span class="vocab-word">give your notice</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> To formally tell your employer that you are leaving your job. Usually requires a set period (e.g., two weeks' notice). Also: "hand in your notice" / "put in your notice."</div>
+      <div class="vocab-example">"Whenever you decide to give your notice to the company, let me know."</div>
+      <span class="vocab-prompt">✍️ Your turn: Have you or someone you know ever given notice at a job? How did it feel?</span>
+    </div></div>
+  </div>
+
+  <!-- 8 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-adj">adjective</span>
+      <span class="vocab-word">genuine</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> Truly what it appears to be; authentic and sincere. Used for people, emotions, or things. A "genuine person" is honest and not fake.</div>
+      <div class="vocab-example">"People usually respond better when you're genuine."</div>
+      <span class="vocab-prompt">✍️ Your turn: Describe someone in your life who you think is genuinely kind. What makes them that way?</span>
+    </div></div>
+  </div>
+
+  <!-- 9 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-verb">verb</span>
+      <span class="vocab-word">pretend</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> To act as if something is true when it isn't — to put on a false appearance. Used for emotions, identities, or situations.</div>
+      <div class="vocab-example">"Pretending to be someone else is exhausting."</div>
+      <span class="vocab-prompt">✍️ Your turn: Have you ever had to pretend to be fine when you weren't? What was the situation?</span>
+    </div></div>
+  </div>
+
+  <!-- 10 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-adj">adjective</span>
+      <span class="vocab-word">exhausting</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> Making you feel very tired — physically or mentally. Something can be physically exhausting (running a marathon) or emotionally exhausting (worrying all day).</div>
+      <div class="vocab-example">"Pretending to be someone else is exhausting."</div>
+      <span class="vocab-prompt">✍️ Your turn: What's the most mentally exhausting thing you deal with regularly?</span>
+    </div></div>
+  </div>
+
+  <!-- 11 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-phrase">phrase</span>
+      <span class="vocab-word">reassurance</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> Words or actions that remove someone's doubts or fears and make them feel more confident. The verb form is "to reassure (someone)."</div>
+      <div class="vocab-example">"Even simple reassurance can really help someone relax before a stressful event."</div>
+      <span class="vocab-prompt">✍️ Your turn: Write a sentence of reassurance you could say to a nervous friend.</span>
+    </div></div>
+  </div>
+
+  <!-- 12 -->
+  <div class="vocab-card" onclick="toggleVocab(this)">
+    <div class="vocab-header">
+      <span class="vocab-tag tag-phrase">phrase</span>
+      <span class="vocab-word">make a difference</span>
+      <span class="vocab-chevron">▼</span>
+    </div>
+    <div class="vocab-body"><div class="vocab-inner">
+      <div class="vocab-meaning"><strong>Meaning:</strong> To have a noticeable effect or impact on a situation or person. Often used in questions and negatives: "It won't make a difference" / "Does it really make a difference?"</div>
+      <div class="vocab-example">"So you're saying however I dress or whatever I say won't make a difference."</div>
+      <span class="vocab-prompt">✍️ Your turn: Do you think first impressions really make a difference? Why or why not?</span>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 7 — DISCUSSION
+═══════════════════════════════════════════ -->
+<div id="discussion" class="section">
+  <h2 class="section-title">Discussion Questions 💭</h2>
+  <p class="section-subtitle">These are open-ended — there are no wrong answers. Sample answers are provided as a guide, not a script.</p>
+
+  <div class="tip-box">
+    <strong>🎯 Teacher Note</strong>
+    Encourage students to expand their answers using Wh-ever words! For example: "Whatever happens, I just try to…" or "Whoever I'm with, I feel nervous when…"
+  </div>
+
+  <div class="scenario-list">
+
+    <div class="scenario-item">
+      <div class="s-label">Question 1</div>
+      <div class="s-text">What kinds of situations usually make you feel the most nervous?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Answer</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Model Answer</div>
+          <div class="answer-why">
+            <em>"I get most nervous when I have to meet new people, especially if I want to make a good impression. I tend to overthink whatever I'll say."</em>
+            <br><br>💬 <strong>Follow-ups:</strong> Does it depend on who the person is? Does meeting someone online first make it easier?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Question 2</div>
+      <div class="s-text">How do you usually calm yourself down when you feel anxious?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Answer</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Model Answer</div>
+          <div class="answer-why">
+            <em>"I try to take deep breaths and remind myself that the situation won't last forever. Sometimes listening to music helps, too."</em>
+            <br><br>💬 <strong>Follow-ups:</strong> Do you have a go-to song for when you're stressed? Does the method change depending on the situation?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Question 3</div>
+      <div class="s-text">Do you think being yourself is always the best advice in stressful social situations? Why or why not?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Answer</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Model Answer</div>
+          <div class="answer-why">
+            <em>"I think it's good advice because pretending to be someone else is exhausting. People usually respond better when you're genuine. However, in some formal situations, you still need to adjust your tone — that's not being fake, that's being professional."</em>
+            <br><br>💬 <strong>Follow-ups:</strong> Is there a difference between "being yourself" and "being professional"? Can both coexist?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Question 4</div>
+      <div class="s-text">Has worrying about making a bad impression ever turned out to be unnecessary for you?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Answer</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Model Answer</div>
+          <div class="answer-why">
+            <em>"Yes, many times. I often realize afterward that people were much kinder and more understanding than I expected. Whatever I'd been dreading usually never happened."</em>
+            <br><br>💬 <strong>Follow-ups:</strong> Why do you think we tend to expect the worst? Is that a human thing, or is it cultural?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Question 5</div>
+      <div class="s-text">How comfortable are you with giving encouragement to someone who is anxious?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> Sample Answer</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Model Answer</div>
+          <div class="answer-why">
+            <em>"I'm fairly comfortable because I know how anxiety feels. Even simple reassurance can really help someone relax. Whoever is struggling, I try to remind them that it will pass."</em>
+            <br><br>💬 <strong>Follow-ups:</strong> Is there a phrase or sentence you always say to encourage someone? Where did you learn it?
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 8 — HYPOTHETICAL / WOULD YOU RATHER
+═══════════════════════════════════════════ -->
+<div id="hypothetical" class="section">
+  <h2 class="section-title">Would You Rather? 🎲</h2>
+  <p class="section-subtitle">End-of-lesson fun. No wrong answers — but you <em>must</em> choose one and explain why using today's language!</p>
+
+  <div class="tip-box">
+    <strong>🎯 Challenge for Students</strong>
+    You <em>must</em> use at least one Wh-ever word in your answer. Try: <em>"Whatever I choose, I think…"</em> or <em>"Whoever is in the situation would probably…"</em>
+  </div>
+
+  <div class="scenario-list">
+
+    <div class="scenario-item">
+      <div class="s-label">Hypothetical 1 😂</div>
+      <div class="s-text" style="font-size:1.05rem">Would you rather have to <strong>perform a dramatic one-person play</strong> at your partner's family dinner every single time you visit — OR — <strong>give a 10-minute work presentation</strong> while your entire family watches from the back of the room?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> See Discussion Points</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Things to Discuss</div>
+          <div class="answer-why">
+            🎭 <strong>Play at dinner:</strong> Your partner's family sees the most embarrassing version of you — every visit, forever. But at least it becomes a tradition and <em>whoever</em> meets you knows what to expect!<br><br>
+            💼 <strong>Work presentation with family:</strong> Your mum is in the back row making proud faces while your boss is asking hard questions. One time only — but the memories last forever.<br><br>
+            💬 <strong>Sample answer using Wh-ever:</strong> <em>"I'd rather do the work presentation because however embarrassing it is, it only happens once. Whatever my family does in the back row, I can ignore it."</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Hypothetical 2 😂</div>
+      <div class="s-text" style="font-size:1.05rem">Would you rather <strong>accidentally call your teacher "Mum" or "Dad" in front of the whole class</strong> — OR — <strong>trip and fall on the way to receive an award</strong> in front of 500 people?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> See Discussion Points</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Things to Discuss</div>
+          <div class="answer-why">
+            👩‍🏫 <strong>"Mum" slip:</strong> Deeply personal, lingers in classroom memory for the rest of the year. <em>Whoever</em> is in that class will bring it up at every reunion.<br><br>
+            🏆 <strong>Award trip:</strong> 500 witnesses, but it's a one-second moment. You got an award — that's still a win. <em>Whatever</em> people remember, you still went home with the trophy.<br><br>
+            💬 <strong>Sample answer:</strong> <em>"I'd rather trip at the award ceremony. However embarrassing it is, at least everyone knows I won something. Whenever I think about calling my teacher 'Mum', I want to disappear."</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="s-label">Hypothetical 3 😂</div>
+      <div class="s-text" style="font-size:1.05rem">Would you rather have to <strong>text your ex</strong> every time you use a Wh-ever word in real life — OR — have your phone announce your <strong>grammar mistakes out loud</strong> in a robot voice whenever you're in a quiet public place?</div>
+      <button class="reveal-btn" onclick="toggleAnswer(this)"><span class="icon">▼</span> See Discussion Points</button>
+      <div class="answer-panel">
+        <div class="answer-inner">
+          <div class="answer-label">Things to Discuss</div>
+          <div class="answer-why">
+            💬 <strong>Text your ex:</strong> You'd either stop using Wh-ever words completely (bad for your English!) or your ex gets a LOT of random messages that just say "whatever" with no context.<br><br>
+            🤖 <strong>Robot voice:</strong> Imagine sitting in a library and your phone screams: <em>"INCORRECT — HOWEVER IS FOR MANNER, NOT TIME."</em> Humiliating, but your English would improve extremely fast.<br><br>
+            💬 <strong>Sample answer:</strong> <em>"I'd rather have the robot voice. Whoever is around me would just have to deal with it. Whatever embarrassment I feel is worth it — at least I'm learning!"</em>
+            <br><br>🌟 <em>Best answer of the lesson wins bragging rights.</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script>
+  const SECTIONS = ['warmup','ref','vocab','grammar','convo','vocabwords','speaking','discussion','hypothetical'];
+
+  const showSection = (id) => {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button')[SECTIONS.indexOf(id)].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const toggleVocab = (card) => card.classList.toggle('open');
+
+  const toggleAnswer = (btn) => {
+    const panel = btn.nextElementSibling;
+    const isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.querySelector('.icon').textContent = isOpen ? '▼' : '▲';
+    btn.childNodes[1].textContent = isOpen ? ' Reveal Answer' : ' Hide Answer';
+  };
+</script>
+
+</body>
+</html>

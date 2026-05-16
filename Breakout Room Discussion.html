@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Breakout Discussion – Endangered Animals</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background: linear-gradient(120deg,#f4f8ff,#eef6ff);
+padding:40px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.section{
+background:white;
+padding:35px;
+border-radius:14px;
+box-shadow:0 4px 14px rgba(0,0,0,0.08);
+margin-bottom:30px;
+}
+
+h1{
+text-align:center;
+color:#4a55a2;
+}
+
+.instructions{
+background:#eef6ff;
+padding:18px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.question{
+background:#f9fbff;
+padding:18px;
+border-radius:10px;
+margin-top:20px;
+border-left:5px solid #5a6ff0;
+}
+
+textarea{
+width:100%;
+height:80px;
+margin-top:10px;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+.example{
+display:none;
+background:#eafaf1;
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+}
+
+button{
+background:#ff7a59;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:8px;
+cursor:pointer;
+margin-top:8px;
+}
+
+</style>
+
+<script>
+
+function reveal(id){
+var el=document.getElementById(id);
+if(el.style.display==="block"){
+el.style.display="none";
+}else{
+el.style.display="block";
+}
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="section">
+
+<h1>🌍 Breakout Room Discussion</h1>
+
+<div class="instructions">
+
+<b>Instructions</b>
+
+<ul>
+<li>Discuss each question with your classmates.</li>
+<li>Share your opinions.</li>
+<li>Write short answers if you want.</li>
+<li>If you need help, click “Example Answer”.</li>
+</ul>
+
+</div>
+
+<h2>Main Discussion Questions</h2>
+
+<div class="question">
+
+1. When you hear news about animals close to extinction, how does it make you feel?
+
+<textarea></textarea>
+
+<button onclick="reveal('ex1')">Example Answer</button>
+
+<div id="ex1" class="example">
+It makes me feel sad and frustrated. It reminds me that humans should protect animals and nature more.
+</div>
+
+</div>
+
+
+
+<div class="question">
+
+2. Do you think small actions by individuals can make a difference for environmental problems?
+
+<textarea></textarea>
+
+<button onclick="reveal('ex2')">Example Answer</button>
+
+<div id="ex2" class="example">
+Yes, I think small actions matter. If many people recycle, reduce plastic, and protect nature, it can create a big change.
+</div>
+
+</div>
+
+
+
+<div class="question">
+
+3. Have you ever changed your behavior because of environmental concerns?
+
+<textarea></textarea>
+
+<button onclick="reveal('ex3')">Example Answer</button>
+
+<div id="ex3" class="example">
+Yes, I try to reduce plastic use and recycle more. I also try to support eco-friendly products.
+</div>
+
+</div>
+
+
+
+<div class="question">
+
+4. What do you think is the biggest challenge in protecting endangered animals?
+
+<textarea></textarea>
+
+<button onclick="reveal('ex4')">Example Answer</button>
+
+<div id="ex4" class="example">
+The biggest challenge is balancing human needs with nature. Many industries destroy habitats to make money.
+</div>
+
+</div>
+
+
+
+<div class="question">
+
+5. If you could focus on protecting one endangered species, which would you choose and why?
+
+<textarea></textarea>
+
+<button onclick="reveal('ex5')">Example Answer</button>
+
+<div id="ex5" class="example">
+I would protect sea turtles because they are important for the ocean ecosystem and they are often affected by pollution.
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="section">
+
+<h2>🐾 Hypothetical & Fun Questions</h2>
+
+<p>Discuss these creative questions with your group.</p>
+
+<div class="question">
+1. If animals could talk, what would they say about humans?
+<textarea></textarea>
+<button onclick="reveal('h1')">Example</button>
+<div id="h1" class="example">They might say humans are destroying nature and should protect the planet.</div>
+</div>
+
+<div class="question">
+2. If you could become any animal for one day, which would you choose?
+<textarea></textarea>
+<button onclick="reveal('h2')">Example</button>
+<div id="h2" class="example">I would become a bird so I could fly and see the world from the sky.</div>
+</div>
+
+<div class="question">
+3. If one animal became the smartest species on Earth, which would it be?
+<textarea></textarea>
+<button onclick="reveal('h3')">Example</button>
+<div id="h3" class="example">Maybe dolphins, because they are already very intelligent.</div>
+</div>
+
+<div class="question">
+4. If animals had their own government, which animal would be the leader?
+<textarea></textarea>
+<button onclick="reveal('h4')">Example</button>
+<div id="h4" class="example">Elephants might be good leaders because they live in strong family groups.</div>
+</div>
+
+<div class="question">
+5. If you could design the perfect habitat for an endangered animal, what would it look like?
+<textarea></textarea>
+<button onclick="reveal('h5')">Example</button>
+<div id="h5" class="example">It would be a large protected forest with clean water and no hunters.</div>
+</div>
+
+<div class="question">
+6. If humans disappeared tomorrow, what would happen to endangered animals?
+<textarea></textarea>
+<button onclick="reveal('h6')">Example</button>
+<div id="h6" class="example">Many animals might recover because their habitats would be protected.</div>
+</div>
+
+<div class="question">
+7. If you could invent a machine to protect animals, what would it do?
+<textarea></textarea>
+<button onclick="reveal('h7')">Example</button>
+<div id="h7" class="example">It could detect illegal hunters and alert wildlife protection teams.</div>
+</div>
+
+<div class="question">
+8. If you could bring back one extinct animal, which would it be?
+<textarea></textarea>
+<button onclick="reveal('h8')">Example</button>
+<div id="h8" class="example">I would bring back the woolly mammoth because it is a fascinating ancient species.</div>
+</div>
+
+<div class="question">
+9. If animals could vote, which environmental rule would they support first?
+<textarea></textarea>
+<button onclick="reveal('h9')">Example</button>
+<div id="h9" class="example">They would probably vote to stop deforestation and protect forests.</div>
+</div>
+
+<div class="question">
+10. If animals could send a message to humans, what would it say?
+<textarea></textarea>
+<button onclick="reveal('h10')">Example</button>
+<div id="h10" class="example">Please protect the planet because it is our home too.</div>
+</div>
+
+</div>
+
+
+
+<div class="section">
+
+<h2>🕚 Final 5-Minute Q&A</h2>
+
+<div class="instructions">
+
+<ul>
+<li>What new vocabulary did you learn today?</li>
+<li>What surprised you about endangered animals?</li>
+<li>Which discussion question was the most interesting?</li>
+<li>What is one thing humans can do to protect wildlife?</li>
+<li>If you could send one message to the world about protecting animals, what would it be?</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

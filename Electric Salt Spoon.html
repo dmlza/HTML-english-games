@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Electric Salt Spoon – Interactive English Lesson</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background: linear-gradient(135deg,#eef6ff,#f9fbff);
+margin:0;
+padding:30px;
+color:#333;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+background:white;
+padding:40px;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+color:#2c4a7a;
+}
+
+h2{
+color:#4a6fb5;
+margin-top:40px;
+}
+
+.story{
+background:#f4f8ff;
+padding:20px;
+border-radius:8px;
+line-height:1.6;
+}
+
+.vocab{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+margin-top:20px;
+}
+
+.card{
+background:#f9fbff;
+padding:15px;
+border-radius:8px;
+border:1px solid #e3ecff;
+}
+
+.word{
+font-weight:bold;
+color:#3c5da8;
+}
+
+button{
+margin-top:10px;
+padding:8px 14px;
+border:none;
+background:#4a6fb5;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#2e4c88;
+}
+
+.hidden{
+display:none;
+margin-top:8px;
+}
+
+.match-container{
+display:flex;
+gap:40px;
+flex-wrap:wrap;
+margin-top:20px;
+}
+
+.match-column{
+flex:1;
+min-width:250px;
+}
+
+.item{
+background:#eef3ff;
+margin:6px 0;
+padding:10px;
+border-radius:6px;
+cursor:grab;
+}
+
+.dropzone{
+background:#f7f9ff;
+border:2px dashed #b7c6f7;
+padding:10px;
+margin:6px 0;
+border-radius:6px;
+min-height:35px;
+}
+
+.pronounce{
+background:#f6faff;
+padding:15px;
+border-radius:8px;
+margin:10px 0;
+}
+
+.discussion{
+background:#fff6e8;
+padding:20px;
+border-radius:10px;
+margin-top:30px;
+}
+
+footer{
+text-align:center;
+margin-top:40px;
+font-size:14px;
+color:#777;
+}
+
+.correct{background:#7ed957!important;}
+.wrong{background:#ff9e9e!important;}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Electric Salt Spoon</h1>
+<p style="text-align:center">Interactive English Lesson</p>
+
+
+<h2>Warm-Up: Guess the Salty Food</h2>
+
+<div class="discussion">
+
+<p><b>Click the foods you think are high in salt.</b></p>
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+
+<button onclick="saltCheck(this,true)">Instant noodles</button>
+<button onclick="saltCheck(this,true)">Potato chips</button>
+<button onclick="saltCheck(this,false)">Bananas</button>
+<button onclick="saltCheck(this,true)">Pizza</button>
+<button onclick="saltCheck(this,false)">Fresh fruit</button>
+<button onclick="saltCheck(this,true)">Fast food burgers</button>
+
+</div>
+
+<p style="margin-top:20px"><b>Discuss:</b></p>
+
+<ul>
+<li>Do you like salty food?</li>
+<li>What salty foods are popular in your country?</li>
+<li>Do people today eat too much salt?</li>
+<li>Would you try to eat less salt?</li>
+</ul>
+
+</div>
+
+
+<h2>Reading</h2>
+
+<div class="story">
+
+<p>A battery-powered spoon that makes food taste saltier is now in stores in Japan. It is called the Electric Salt Spoon. It was created by researchers from Tokyo's Meiji University and the Japanese drinks company Kirin.</p>
+
+<p>They hope their spoon will help people to cut down on the amount of salt they eat. The spoon sends a weak electric current to the tongue. The current is too weak to be felt. However, it makes salt taste up to one and a half times stronger.</p>
+
+<p>This means we can eat food with less salt but still sense a salty taste. Researcher Ai Sato said Japan has a food culture that tends to favor salty tastes. However, food with no salt is bland and tasteless.</p>
+
+<p>Too much salt can cause cardiovascular diseases such as high blood pressure, strokes, and heart problems. The World Health Organization recommends less than 5 grams of salt per day.</p>
+
+<p>The Electric Salt Spoon costs around $99. The company hopes to sell one million of them in five years. The developer also created electric chopsticks.</p>
+
+</div>
+
+
+<h2>Vocabulary Understanding</h2>
+
+<div class="vocab">
+
+<div class="card"><div class="word">cut down on</div><p>Meaning: reduce something</p><button onclick="toggle(this)">Example</button><div class="hidden">I want to cut down on sugar.</div></div>
+
+<div class="card"><div class="word">battery-powered</div><p>Meaning: operated using batteries</p><button onclick="toggle(this)">Example</button><div class="hidden">My toothbrush is battery-powered.</div></div>
+
+<div class="card"><div class="word">electric current</div><p>Meaning: flow of electricity</p><button onclick="toggle(this)">Example</button><div class="hidden">Electric current powers the device.</div></div>
+
+<div class="card"><div class="word">sense</div><p>Meaning: feel or detect</p><button onclick="toggle(this)">Example</button><div class="hidden">I can sense the smell of coffee.</div></div>
+
+<div class="card"><div class="word">bland</div><p>Meaning: not strong in taste</p><button onclick="toggle(this)">Example</button><div class="hidden">The soup tastes bland.</div></div>
+
+<div class="card"><div class="word">tasteless</div><p>Meaning: having no flavor</p><button onclick="toggle(this)">Example</button><div class="hidden">The food was tasteless.</div></div>
+
+<div class="card"><div class="word">favor</div><p>Meaning: prefer</p><button onclick="toggle(this)">Example</button><div class="hidden">I favor spicy food.</div></div>
+
+<div class="card"><div class="word">intake</div><p>Meaning: amount eaten</p><button onclick="toggle(this)">Example</button><div class="hidden">Reduce salt intake.</div></div>
+
+<div class="card"><div class="word">cardiovascular</div><p>Meaning: related to heart</p><button onclick="toggle(this)">Example</button><div class="hidden">Exercise prevents cardiovascular disease.</div></div>
+
+<div class="card"><div class="word">stroke</div><p>Meaning: brain medical emergency</p><button onclick="toggle(this)">Example</button><div class="hidden">High blood pressure increases stroke risk.</div></div>
+
+<div class="card"><div class="word">processed foods</div><p>Meaning: factory-made food</p><button onclick="toggle(this)">Example</button><div class="hidden">Instant noodles are processed foods.</div></div>
+
+<div class="card"><div class="word">recommend</div><p>Meaning: suggest</p><button onclick="toggle(this)">Example</button><div class="hidden">Doctors recommend exercise.</div></div>
+
+<div class="card"><div class="word">average</div><p>Meaning: typical amount</p><button onclick="toggle(this)">Example</button><div class="hidden">The average person sleeps 7 hours.</div></div>
+
+<div class="card"><div class="word">developer</div><p>Meaning: person who creates technology</p><button onclick="toggle(this)">Example</button><div class="hidden">The developer created the app.</div></div>
+
+<div class="card"><div class="word">go on sale</div><p>Meaning: become available to buy</p><button onclick="toggle(this)">Example</button><div class="hidden">The phone goes on sale tomorrow.</div></div>
+
+<div class="card"><div class="word">globally</div><p>Meaning: around the world</p><button onclick="toggle(this)">Example</button><div class="hidden">The product sells globally.</div></div>
+
+<div class="card"><div class="word">reduce</div><p>Meaning: make smaller</p><button onclick="toggle(this)">Example</button><div class="hidden">Exercise reduces stress.</div></div>
+
+<div class="card"><div class="word">culture</div><p>Meaning: traditions of people</p><button onclick="toggle(this)">Example</button><div class="hidden">Food culture is important.</div></div>
+
+<div class="card"><div class="word">weak</div><p>Meaning: not strong</p><button onclick="toggle(this)">Example</button><div class="hidden">The signal is weak.</div></div>
+
+<div class="card"><div class="word">taste stronger</div><p>Meaning: flavor becomes stronger</p><button onclick="toggle(this)">Example</button><div class="hidden">Lemon makes tea taste stronger.</div></div>
+
+</div>
+
+
+<h2>Pronunciation Practice</h2>
+
+<div class="pronounce">cardiovascular /ˌkɑːrdiəʊˈvæskjələr/</div>
+<div class="pronounce">intake /ˈɪnteɪk/</div>
+<div class="pronounce">recommend /ˌrekəˈmend/</div>
+<div class="pronounce">processed /ˈprəʊsest/</div>
+<div class="pronounce">developer /dɪˈveləpər/</div>
+
+
+<h2>Matching Game 1 – Vocabulary & Meaning</h2>
+
+<div class="match-container">
+
+<div class="match-column">
+<div class="item" draggable="true">cut down on</div>
+<div class="item" draggable="true">processed foods</div>
+<div class="item" draggable="true">intake</div>
+<div class="item" draggable="true">recommend</div>
+<div class="item" draggable="true">bland</div>
+</div>
+
+<div class="match-column">
+<div class="dropzone">reduce something</div>
+<div class="dropzone">factory-made foods</div>
+<div class="dropzone">amount eaten</div>
+<div class="dropzone">suggest</div>
+<div class="dropzone">no strong taste</div>
+</div>
+
+</div>
+
+
+<h2>Matching Game 2 – Vocabulary & Situation</h2>
+
+<div class="match-container">
+
+<div class="match-column">
+<div class="item" draggable="true">reduce</div>
+<div class="item" draggable="true">favor</div>
+<div class="item" draggable="true">developer</div>
+<div class="item" draggable="true">go on sale</div>
+<div class="item" draggable="true">globally</div>
+</div>
+
+<div class="match-column">
+<div class="dropzone">People around the world buy the product</div>
+<div class="dropzone">A person who creates new technology</div>
+<div class="dropzone">You make something smaller</div>
+<div class="dropzone">The product becomes available to buy</div>
+<div class="dropzone">You prefer one thing more than another</div>
+</div>
+
+</div>
+
+
+<h2>Discussion</h2>
+
+<div class="discussion">
+
+<p>1. Do you think this spoon is a good invention?</p>
+<p>2. Would you buy a $99 spoon?</p>
+<p>3. Do people in your country eat too much salt?</p>
+<p>4. What foods are very salty in your culture?</p>
+<p>5. Should technology help people eat healthier?</p>
+<p>6. Would electric chopsticks be popular?</p>
+<p>7. If you invented a smart kitchen tool, what would it do?</p>
+<p>8. Do you prefer salty or sweet food?</p>
+
+</div>
+
+
+<h2>Cool Down</h2>
+
+<div class="discussion">
+
+<p>Finish one sentence:</p>
+
+<ul>
+<li>I think the Electric Salt Spoon is ______ because ______.</li>
+<li>I would / would not buy this spoon because ______.</li>
+<li>The best invention for healthy eating would be ______.</li>
+</ul>
+
+</div>
+
+
+<footer>
+Interactive English Lesson
+</footer>
+
+</div>
+
+
+<script>
+
+function toggle(button){
+let hidden = button.nextElementSibling;
+hidden.style.display = hidden.style.display==="block" ? "none":"block";
+}
+
+function saltCheck(btn,correct){
+
+if(correct){
+btn.classList.add("correct");
+btn.innerText="✔ Salty";
+}else{
+btn.classList.add("wrong");
+btn.innerText="✖ Not salty";
+}
+
+btn.disabled=true;
+}
+
+let items=document.querySelectorAll('.item');
+let zones=document.querySelectorAll('.dropzone');
+
+items.forEach(item=>{
+item.addEventListener('dragstart',function(){dragged=this});
+});
+
+let dragged;
+
+zones.forEach(zone=>{
+zone.addEventListener('dragover',e=>e.preventDefault());
+
+zone.addEventListener('drop',function(){
+this.appendChild(dragged);
+});
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Embezzlement: A Serious Breach of Trust</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:      #2d6a4f;
+  --green-l:    #52b788;
+  --green-bg:   #f7fbf9;
+  --gold:       #b5883a;
+  --gold-l:     #f4e9d0;
+  --teal:       #1a7a74;
+  --teal-bg:    #f0f9f8;
+  --purple:     #5e3a8c;
+  --purple-bg:  #f5f0fb;
+  --blue:       #1d4e89;
+  --blue-bg:    #eef3fb;
+  --red:        #c0392b;
+  --text:       #1a1a2e;
+  --muted:      #6b7280;
+  --border:     #e2e8f0;
+  --r:          10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { font-family: 'DM Sans', sans-serif; background: #f4f4f0; color: var(--text); min-height: 100vh; }
+
+.lesson-header { background: var(--green); color: white; padding: 24px 32px; border-bottom: 4px solid var(--gold); }
+.lesson-header h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; }
+.lesson-header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+
+.progress-bar { height: 3px; background: var(--border); }
+.progress-fill { height: 100%; background: var(--gold); transition: width 0.4s ease; }
+
+.tab-nav { display: flex; background: white; border-bottom: 2px solid var(--border); overflow-x: auto; padding: 0 16px; }
+.tab-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+  padding: 14px 18px; border: none; background: none; cursor: pointer;
+  color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px;
+  white-space: nowrap; transition: color 0.2s, border-color 0.2s;
+}
+.tab-btn:hover { color: var(--green); }
+.tab-btn.active { color: var(--green); border-bottom-color: var(--gold); }
+.tab-time { display: block; font-size: 0.7rem; font-weight: 400; color: var(--muted); margin-top: 2px; }
+
+.tab-pane { display: none; padding: 28px 32px 40px; max-width: 820px; margin: 0 auto; }
+.tab-pane.active { display: block; }
+
+.section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--green); margin-bottom: 6px; }
+.section-subtitle { font-size: 0.87rem; color: var(--muted); margin-bottom: 20px; }
+
+.card { background: white; border-radius: var(--r); padding: 22px 24px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+
+/* ── Vocab ── */
+.vocab-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; padding: 16px; background: var(--gold-l); border-radius: var(--r); border: 1px solid #ddc98a; }
+.vocab-chip { background: white; border: 1.5px solid var(--gold); color: var(--gold); font-size: 0.82rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+
+.passage { font-family: 'Lora', serif; font-size: 0.97rem; line-height: 1.85; }
+
+.blank-marker {
+  display: inline-block; min-width: 130px; border-bottom: 2px solid var(--green);
+  color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+  text-align: center; vertical-align: bottom; margin: 0 2px; transition: all 0.25s;
+}
+.blank-marker.correct { color: var(--green); font-family: 'Lora', serif; font-size: 0.97rem; font-weight: 600; border-color: var(--green); }
+.blank-marker.incorrect { color: var(--red); border-color: var(--red); }
+
+/* ── Question / Pill system ── */
+.question-block { margin-bottom: 18px; padding: 16px 18px; background: var(--green-bg); border-radius: var(--r); border-left: 4px solid var(--green-l); }
+.question-block.purple { background: var(--purple-bg); border-left-color: var(--purple); }
+.question-stem { font-size: 0.87rem; font-weight: 600; color: var(--green); margin-bottom: 10px; }
+.question-block.purple .question-stem { color: var(--purple); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.pill {
+  font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 500;
+  padding: 7px 16px; border: 2px solid var(--green-l); background: white;
+  color: var(--green); border-radius: 20px; cursor: pointer; transition: all 0.15s;
+}
+.pill:hover:not(:disabled) { background: var(--green); color: white; }
+.pill:disabled { cursor: default; opacity: 0.7; }
+.pill.correct-sel { background: var(--green); color: white; border-color: var(--green); opacity: 1; }
+.pill.wrong-sel   { background: #fef2f2; color: var(--red); border-color: var(--red); opacity: 1; }
+.pill.show-correct { background: var(--green); color: white; border-color: var(--green); opacity: 1; }
+
+.pill.blue { border-color: #93b4d8; color: var(--blue); }
+.pill.blue:hover:not(:disabled) { background: var(--blue); color: white; }
+.pill.blue.correct-sel, .pill.blue.show-correct { background: var(--blue); color: white; border-color: var(--blue); opacity: 1; }
+.pill.blue.wrong-sel { background: #fef2f2; color: var(--red); border-color: var(--red); opacity: 1; }
+
+.pill.purple { border-color: #b39ddb; color: var(--purple); }
+.pill.purple:hover:not(:disabled) { background: var(--purple); color: white; }
+.pill.purple.correct-sel, .pill.purple.show-correct { background: var(--purple); color: white; border-color: var(--purple); opacity: 1; }
+.pill.purple.wrong-sel { background: #fef2f2; color: var(--red); border-color: var(--red); opacity: 1; }
+
+.feedback-panel { display: none; margin-top: 12px; background: white; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+.feedback-panel.visible { display: block; }
+.feedback-item { padding: 10px 14px; font-size: 0.85rem; line-height: 1.55; border-bottom: 1px solid var(--border); }
+.feedback-item:last-child { border-bottom: none; }
+.feedback-item.correct-fb { background: #f0faf4; }
+.feedback-item.wrong-fb { background: #fef9f9; }
+
+/* ── Grammar reference ── */
+.grammar-ref { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1.5px solid #b39ddb; border-radius: var(--r); overflow: hidden; margin-bottom: 24px; }
+.gram-col { padding: 16px; }
+.gram-col:not(:last-child) { border-right: 1.5px solid #b39ddb; }
+.gram-col-head { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+.gram-col-label { font-size: 0.77rem; color: var(--muted); font-style: italic; margin-bottom: 10px; }
+.gram-col-ex { font-family: 'Lora', serif; font-size: 0.87rem; line-height: 1.6; }
+.gram-col-ex em { font-style: normal; font-weight: 700; }
+
+.grammar-sentence { font-family: 'Lora', serif; font-size: 0.97rem; line-height: 1.7; margin-bottom: 10px; }
+.g-blank { border-bottom: 2px solid var(--purple); min-width: 70px; display: inline-block; text-align: center; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; }
+.g-blank.filled { color: var(--purple); font-weight: 700; font-family: 'Lora', serif; font-size: 0.97rem; }
+
+.cat-sentence { font-family: 'Lora', serif; font-size: 0.95rem; font-style: italic; margin-bottom: 10px; line-height: 1.6; }
+.cat-pills .pill { font-size: 0.78rem; padding: 5px 12px; }
+
+/* ── Use It! ── */
+.phrase-card { background: white; border-radius: var(--r); border: 1px solid var(--border); border-left: 4px solid var(--gold); padding: 18px 20px; margin-bottom: 18px; }
+.phrase-text { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--green); font-weight: 600; margin-bottom: 4px; }
+.phrase-meaning { font-size: 0.84rem; color: var(--muted); margin-bottom: 14px; }
+textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: 'Lora', serif; font-size: 0.93rem; resize: vertical; min-height: 70px; color: var(--text); transition: border-color 0.2s; }
+textarea:focus { outline: none; border-color: var(--green-l); }
+.word-count { font-size: 0.75rem; color: var(--muted); text-align: right; margin-top: 4px; margin-bottom: 10px; }
+.see-example-btn { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600; color: var(--gold); background: none; border: 1.5px solid var(--gold); border-radius: 20px; padding: 6px 14px; cursor: pointer; transition: all 0.15s; }
+.see-example-btn:hover { background: var(--gold); color: white; }
+.model-answer { display: none; margin-top: 12px; background: var(--gold-l); border-radius: 8px; padding: 12px 14px; font-family: 'Lora', serif; font-size: 0.9rem; font-style: italic; color: #7a5c1e; line-height: 1.6; }
+.model-answer.visible { display: block; }
+
+/* ── Reading ── */
+.reading-passage { font-family: 'Lora', serif; font-size: 0.97rem; line-height: 1.9; }
+.reading-passage h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--green); margin: 18px 0 8px; }
+.reading-passage p { margin-bottom: 14px; }
+
+.tip { border-bottom: 2px solid var(--gold); color: var(--gold); cursor: help; position: relative; display: inline; }
+.tip .tip-text { display: none; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1a1a2e; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; padding: 6px 10px; border-radius: 6px; white-space: nowrap; z-index: 10; pointer-events: none; }
+.tip:hover .tip-text { display: block; }
+
+.oral-prompt { background: #fff8e6; border: 1.5px solid var(--gold); border-radius: 8px; padding: 14px 16px; margin: 18px 0; font-size: 0.87rem; }
+.oral-label { font-weight: 700; color: var(--gold); font-size: 0.75rem; letter-spacing: 0.05em; margin-bottom: 8px; }
+.oral-prompt ul { padding-left: 18px; }
+.oral-prompt li { margin-bottom: 4px; color: #6b4f1a; line-height: 1.5; }
+
+/* ── Discussion ── */
+.speaking-task { background: var(--teal-bg); border: 1.5px solid var(--teal); border-radius: var(--r); padding: 20px 22px; margin-bottom: 24px; }
+.speaking-label { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.08em; color: var(--teal); margin-bottom: 8px; }
+.speaking-task p { font-family: 'Lora', serif; font-size: 0.95rem; line-height: 1.7; color: #1a4a47; }
+
+.discussion-q { margin-bottom: 18px; padding: 18px 20px; background: white; border-radius: var(--r); border: 1px solid var(--border); }
+.discussion-q p { font-family: 'Lora', serif; font-size: 0.95rem; line-height: 1.7; margin-bottom: 12px; }
+.reveal-btn { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--teal); background: none; border: 1.5px solid var(--teal); border-radius: 20px; padding: 6px 14px; cursor: pointer; transition: all 0.15s; }
+.reveal-btn:hover { background: var(--teal); color: white; }
+.sample-answer { display: none; margin-top: 12px; background: var(--teal-bg); border-radius: 8px; padding: 12px 14px; font-family: 'Lora', serif; font-size: 0.9rem; font-style: italic; color: #1a4a47; line-height: 1.7; }
+.sample-answer.visible { display: block; }
+
+/* ── Warm-up ── */
+.scenario-box { background: linear-gradient(135deg, #f7fbf9, #f0f9f4); border: 1.5px solid var(--green-l); border-radius: var(--r); padding: 22px 24px; margin-bottom: 22px; }
+.scenario-box .s-label { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.08em; color: var(--green); margin-bottom: 10px; }
+.scenario-box p { font-family: 'Lora', serif; font-size: 0.97rem; line-height: 1.8; }
+.scenario-box p + p { margin-top: 10px; }
+
+.oral-q-list { list-style: none; padding: 0; }
+.oral-q-list li { padding: 10px 0; border-bottom: 1px solid var(--border); font-family: 'Lora', serif; font-size: 0.95rem; display: flex; gap: 10px; align-items: baseline; }
+.oral-q-list li:last-child { border-bottom: none; }
+.q-num { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--green); min-width: 20px; }
+
+/* ── Nav ── */
+.next-btn { display: block; margin: 32px auto 0; font-family: 'DM Sans', sans-serif; font-size: 0.87rem; font-weight: 600; color: white; background: var(--green); border: none; border-radius: 24px; padding: 12px 32px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+.next-btn:hover { background: #1e5037; transform: translateY(-1px); }
+.reset-link { font-size: 0.75rem; color: var(--muted); cursor: pointer; text-decoration: underline; float: right; }
+.reset-link:hover { color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="lesson-header">
+  <h1>Embezzlement: A Serious Breach of Trust</h1>
+  <p>Reading &amp; Language Skills · B1–B2 · ~90 minutes</p>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:16.66%"></div></div>
+
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" data-tab="warmup">🌡 Warm-Up<span class="tab-time">~10 min</span></button>
+  <button class="tab-btn" data-tab="vocab">📚 Vocabulary<span class="tab-time">~15 min</span></button>
+  <button class="tab-btn" data-tab="useit">✍️ Use It!<span class="tab-time">~15 min</span></button>
+  <button class="tab-btn" data-tab="reading">📄 Reading<span class="tab-time">~20 min</span></button>
+  <button class="tab-btn" data-tab="grammar">⚙️ Grammar<span class="tab-time">~15 min</span></button>
+  <button class="tab-btn" data-tab="discussion">💬 Discussion<span class="tab-time">~15 min</span></button>
+</nav>
+
+<!-- ══ WARM-UP ══ -->
+<div class="tab-pane active" id="pane-warmup">
+  <h2 class="section-title">Warm-Up</h2>
+  <p class="section-subtitle">Think and talk before you read.</p>
+
+  <div class="scenario-box">
+    <div class="s-label">🔎 SCENARIO</div>
+    <p>You work in the finance department of a medium-sized company. One morning, your manager calls an emergency meeting and says: <em>"We have discovered a serious financial irregularity. Someone has been taking money from company accounts — money that was not theirs to take."</em></p>
+    <p>The room goes silent. People look at each other. No one knows who it could be.</p>
+  </div>
+
+  <div class="card">
+    <p style="font-weight:600;color:var(--green);font-size:0.9rem;margin-bottom:12px;">🗣 Discuss these questions with your teacher:</p>
+    <ul class="oral-q-list">
+      <li><span class="q-num">1.</span><span>How would you feel in that meeting? Would you feel suspicious of anyone?</span></li>
+      <li><span class="q-num">2.</span><span>Why do you think people steal money from the organizations they work for?</span></li>
+      <li><span class="q-num">3.</span><span>Have you ever seen or heard about financial dishonesty in a workplace?</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <p style="font-weight:600;color:var(--green);margin-bottom:6px;">🤔 Prediction: What does <em>embezzlement</em> mean?</p>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">Choose what you think — you'll find out right away!</p>
+    <div class="pills" id="predPills">
+      <button class="pill" data-pred="a">Losing company money through bad decisions</button>
+      <button class="pill" data-pred="b">Stealing money you were trusted to look after</button>
+      <button class="pill" data-pred="c">Borrowing from a company without permission</button>
+      <button class="pill" data-pred="d">Refusing to pay back a business loan</button>
+    </div>
+    <div class="feedback-panel" id="predFeedback">
+      <div class="feedback-item wrong-fb">❌ <strong>Losing money through bad decisions</strong> — That describes mismanagement or negligence, not a crime. Embezzlement requires deliberate, dishonest intent.</div>
+      <div class="feedback-item correct-fb">✅ <strong>Stealing money you were trusted to look after</strong> — Exactly right. The key element is <em>trust</em>: the money belongs to someone else, and you were given access to manage it honestly.</div>
+      <div class="feedback-item wrong-fb">❌ <strong>Borrowing without permission</strong> — This could describe theft, but embezzlement is more specific: the person already has <em>legitimate access</em> to the money and exploits that trust.</div>
+      <div class="feedback-item wrong-fb">❌ <strong>Refusing to repay a loan</strong> — That is a civil debt dispute. Embezzlement involves secretly diverting money that was never yours to keep.</div>
+    </div>
+  </div>
+
+  <button class="next-btn" data-next="vocab">Next: Vocabulary →</button>
+</div>
+
+<!-- ══ VOCABULARY ══ -->
+<div class="tab-pane" id="pane-vocab">
+  <h2 class="section-title">Vocabulary</h2>
+  <p class="section-subtitle">Study the words in the bank, then complete both passages.</p>
+  <span class="reset-link" onclick="resetVocab()">↺ Reset exercises</span>
+
+  <div class="vocab-bank">
+    <span class="vocab-chip">embezzlement</span>
+    <span class="vocab-chip">misappropriation</span>
+    <span class="vocab-chip">fraud</span>
+    <span class="vocab-chip">divert</span>
+    <span class="vocab-chip">audit</span>
+    <span class="vocab-chip">breach of trust</span>
+    <span class="vocab-chip">stakeholder</span>
+    <span class="vocab-chip">reputational damage</span>
+    <span class="vocab-chip">restitution</span>
+    <span class="vocab-chip">transparency</span>
+  </div>
+
+  <div class="card">
+    <p style="font-weight:600;color:var(--blue);margin-bottom:12px;">Passage 1</p>
+    <p class="passage" id="p1text"></p>
+  </div>
+  <div id="p1questions"></div>
+
+  <div class="card" style="margin-top:24px;">
+    <p style="font-weight:600;color:var(--blue);margin-bottom:12px;">Passage 2</p>
+    <p class="passage" id="p2text"></p>
+  </div>
+  <div id="p2questions"></div>
+
+  <button class="next-btn" data-next="useit">Next: Use It! →</button>
+</div>
+
+<!-- ══ USE IT! ══ -->
+<div class="tab-pane" id="pane-useit">
+  <h2 class="section-title">Use It!</h2>
+  <p class="section-subtitle">Read the phrase, write your own sentence, then check the example.</p>
+  <div id="useitCards"></div>
+  <button class="next-btn" data-next="reading">Next: Reading →</button>
+</div>
+
+<!-- ══ READING ══ -->
+<div class="tab-pane" id="pane-reading">
+  <h2 class="section-title">Reading</h2>
+  <p class="section-subtitle"><span style="color:var(--gold);font-weight:600;">Gold underlines</span> = hover for meaning.</p>
+
+  <div class="card reading-passage">
+    <h3>What is Embezzlement?</h3>
+    <p><span class="tip">Embezzlement<span class="tip-text">stealing money you were trusted to look after</span></span> is a form of financial <span class="tip">fraud<span class="tip-text">deliberate deception for financial gain</span></span> involving the <span class="tip">misappropriation<span class="tip-text">using money for the wrong purpose</span></span> or theft of funds or property entrusted to an individual's care but owned by someone else. Typically, embezzlement occurs in corporate or organizational settings where an employee or officer has access to company finances. The crime involves deceitfully taking or using funds for personal gain, <span class="tip">breaching the trust<span class="tip-text">breaking someone's confidence in you</span></span> placed in them by the employer or organization.</p>
+
+    <h3>Case 1: Corporate Embezzlement</h3>
+    <p>A classic example is an employee who has access to company accounts and transfers funds into their personal account. For instance, an accountant might create fake invoices and <span class="tip">divert<span class="tip-text">redirect money away from where it should go</span></span> company money to their account.</p>
+
+    <h3>Case 2: Government Embezzlement</h3>
+    <p>A government official might embezzle public funds by approving fake projects or inflating project costs and <span class="tip">pocketing the surplus<span class="tip-text">secretly keeping the extra money for themselves</span></span>.</p>
+
+    <h3>Case 3: Small Businesses</h3>
+    <p>In small businesses, an employee might take cash from daily sales, <span class="tip">manipulate financial records<span class="tip-text">change records dishonestly to hide the theft</span></span>, or issue unauthorized checks.</p>
+  </div>
+
+  <div class="oral-prompt">
+    <div class="oral-label">🎤 QUICK CHECK — Speak your answers aloud</div>
+    <ul>
+      <li>What is the key difference between embezzlement and ordinary theft?</li>
+      <li>Can you explain the three types of embezzlement in your own words?</li>
+    </ul>
+  </div>
+
+  <div class="card reading-passage">
+    <h3>Negative Impacts of Embezzlement</h3>
+    <p><strong>Financial Losses:</strong> Embezzlement can lead to significant financial losses for businesses and governments, impacting their operations and financial health.</p>
+    <p><strong>Erosion of Trust:</strong> It damages the trust between employees and employers. <span class="tip">Clients and stakeholders<span class="tip-text">stakeholder = a person with an interest in an organization</span></span> may also lose confidence in the organization.</p>
+    <p><strong>Legal Consequences:</strong> For the embezzler, the crime can lead to severe legal consequences, including fines, <span class="tip">restitution<span class="tip-text">paying back money that was stolen</span></span>, and imprisonment. For the organization, it can result in costly legal battles and <span class="tip">reputational damage<span class="tip-text">harm to how others see a person or organization</span></span>.</p>
+    <p><strong>Operational Disruption:</strong> The discovery of embezzlement often leads to investigations and <span class="tip">audits<span class="tip-text">official examinations of financial records</span></span>, which can disrupt normal business operations.</p>
+    <p><strong>Emotional Consequences:</strong> Victims may experience emotional distress, a sense of betrayal, and diminished morale.</p>
+  </div>
+
+  <div class="oral-prompt">
+    <div class="oral-label">🎤 QUICK CHECK — Speak your answers aloud</div>
+    <ul>
+      <li>Which impact do you think is most serious? Why?</li>
+      <li>Who are the victims of embezzlement — just the organization, or others too?</li>
+    </ul>
+  </div>
+
+  <p style="font-weight:600;color:var(--green);margin:20px 0 12px;">Comprehension Check</p>
+  <div id="comprehensionQs"></div>
+  <button class="next-btn" data-next="grammar">Next: Grammar →</button>
+</div>
+
+<!-- ══ GRAMMAR ══ -->
+<div class="tab-pane" id="pane-grammar">
+  <h2 class="section-title">Grammar: Modal Verbs of Possibility</h2>
+  <p class="section-subtitle"><em>can</em>, <em>may</em>, and <em>might</em> — how we express what is possible or likely.</p>
+  <span class="reset-link" onclick="resetGrammar()">↺ Reset exercises</span>
+
+  <div class="grammar-ref">
+    <div class="gram-col" style="background:var(--purple-bg)">
+      <div class="gram-col-head" style="color:var(--purple)">can</div>
+      <div class="gram-col-label">General possibility / typical consequence</div>
+      <div class="gram-col-ex">Embezzlement <em>can</em> lead to prison.<br><br>This <em>can</em> result in serious losses.</div>
+    </div>
+    <div class="gram-col" style="background:white">
+      <div class="gram-col-head" style="color:var(--teal)">may</div>
+      <div class="gram-col-label">Specific possibility in a real situation</div>
+      <div class="gram-col-ex">Victims <em>may</em> experience distress.<br><br>Clients <em>may</em> lose confidence.</div>
+    </div>
+    <div class="gram-col" style="background:#fdf8ff">
+      <div class="gram-col-head" style="color:#8b5cf6">might</div>
+      <div class="gram-col-label">Uncertain / hypothetical action</div>
+      <div class="gram-col-ex">An employee <em>might</em> create fake invoices.<br><br>An official <em>might</em> inflate costs.</div>
+    </div>
+  </div>
+
+  <p style="font-weight:600;color:var(--purple);margin-bottom:12px;">Exercise 1 — Choose the best modal verb</p>
+  <div id="grammarEx1"></div>
+
+  <p style="font-weight:600;color:var(--purple);margin:24px 0 8px;">Exercise 2 — Categorize the modal verb use</p>
+  <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">Each sentence is taken directly from the article. Choose the category that best describes how the modal is used.</p>
+  <div id="grammarEx2"></div>
+
+  <button class="next-btn" data-next="discussion">Next: Discussion →</button>
+</div>
+
+<!-- ══ DISCUSSION ══ -->
+<div class="tab-pane" id="pane-discussion">
+  <h2 class="section-title">Discussion</h2>
+  <p class="section-subtitle">Speak first, then check the sample answer.</p>
+
+  <div class="speaking-task">
+    <div class="speaking-label">🎤 SPEAKING TASK — 1 MINUTE</div>
+    <p>Using <strong>can</strong>, <strong>may</strong>, and <strong>might</strong>, describe the possible consequences of embezzlement for an organization. Try to use each modal at least once. For example: <em>"Embezzlement can destroy a company's finances, and employees may lose their jobs as a result…"</em></p>
+  </div>
+
+  <div id="discussionQs"></div>
+  <button class="next-btn" onclick="alert('Well done! You have completed the lesson. 🎉')">Finish Lesson ✓</button>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+
+const P1 = {
+  template: `[p1b1] is a form of [p1b2] that involves the [p1b3] of funds. The guilty person will often [p1b4] money into their own account. When companies run an [p1b5], they can sometimes discover this type of crime.`,
+  blanks: [
+    { id:'p1b1', label:'(1)', answer:'embezzlement', options:['embezzlement','transparency','restitution','audit'],
+      exp:{ embezzlement:'✅ <strong>Embezzlement</strong> — Correct! This is the crime being defined: taking money you were trusted to manage.', transparency:'❌ <strong>Transparency</strong> — This means being open and honest — the opposite of this crime.', restitution:'❌ <strong>Restitution</strong> — This is repaying stolen money, a consequence of the crime, not the crime itself.', audit:'❌ <strong>Audit</strong> — An audit is a financial check used to detect the crime, not the crime itself.' } },
+    { id:'p1b2', label:'(2)', answer:'fraud', options:['fraud','breach of trust','stakeholder','restitution'],
+      exp:{ fraud:'✅ <strong>Fraud</strong> — Correct! Embezzlement is a type of fraud — deliberate financial deception.', 'breach of trust':'❌ <strong>Breach of trust</strong> — This describes the moral dimension of the crime, but fraud is the legal category.', stakeholder:'❌ <strong>Stakeholder</strong> — A stakeholder is a person with an interest in an organization, not a crime type.', restitution:'❌ <strong>Restitution</strong> — Restitution is financial repayment — a legal consequence, not a crime category.' } },
+    { id:'p1b3', label:'(3)', answer:'misappropriation', options:['misappropriation','embezzlement','audit','transparency'],
+      exp:{ misappropriation:'✅ <strong>Misappropriation</strong> — Correct! This specifically means using money for the wrong purpose, taking it from its intended destination.', embezzlement:'❌ <strong>Embezzlement</strong> — This is the name of the crime itself. The sentence says embezzlement "involves the ___ of funds," so it cannot define itself here.', audit:'❌ <strong>Audit</strong> — An audit is an examination of records, not an action involving funds.', transparency:'❌ <strong>Transparency</strong> — Transparency is honesty and openness. It cannot logically follow "involves the ___ of funds."' } },
+    { id:'p1b4', label:'(4)', answer:'divert', options:['divert','audit','breach','restitute'],
+      exp:{ divert:'✅ <strong>Divert</strong> — Correct! To divert money means to redirect it away from where it should go.', audit:'❌ <strong>Audit</strong> — You cannot "audit money into an account." Audit means to examine records, not move funds.', breach:'❌ <strong>Breach</strong> — To breach something means to violate it (like a rule or trust). You do not "breach money into an account."', restitute:'❌ <strong>Restitute</strong> — Restitution means paying money back, not taking it. The direction is wrong.' } },
+    { id:'p1b5', label:'(5)', answer:'audit', options:['audit','fraud','embezzlement','misappropriation'],
+      exp:{ audit:'✅ <strong>Audit</strong> — Correct! Companies run audits — official checks of financial records — to find irregularities like embezzlement.', fraud:'❌ <strong>Fraud</strong> — Companies run audits, not frauds. Fraud is the crime; an audit is the investigation tool.', embezzlement:'❌ <strong>Embezzlement</strong> — Companies do not "run an embezzlement." Embezzlement is what criminals commit.', misappropriation:'❌ <strong>Misappropriation</strong> — You do not "run a misappropriation." This word describes the criminal act, not an investigative procedure.' } }
+  ]
+};
+
+const P2 = {
+  template: `Embezzlement is a serious [p2b1] that can cause [p2b2]. Every [p2b3] in the company — from employees to investors — may lose confidence. Courts often require the criminal to pay [p2b4], and organizations must work hard to rebuild [p2b5].`,
+  blanks: [
+    { id:'p2b1', label:'(1)', answer:'breach of trust', options:['breach of trust','audit','fraud','restitution'],
+      exp:{ 'breach of trust':'✅ <strong>Breach of trust</strong> — Correct! Embezzlement betrays the confidence placed in you — that is exactly a breach of trust.', audit:'❌ <strong>Audit</strong> — An audit is a financial check, not a description of the crime. Embezzlement is not "a serious audit."', fraud:'❌ <strong>Fraud</strong> — Fraud is the legal category of the crime, but "breach of trust" captures the moral betrayal better in this context.', restitution:'❌ <strong>Restitution</strong> — Restitution is repayment ordered after the crime. It cannot describe what embezzlement is.' } },
+    { id:'p2b2', label:'(2)', answer:'reputational damage', options:['reputational damage','transparency','restitution','an audit'],
+      exp:{ 'reputational damage':'✅ <strong>Reputational damage</strong> — Correct! A crime like this harms how others see the organization — that is reputational damage.', transparency:'❌ <strong>Transparency</strong> — Transparency is a positive quality. You cannot "cause transparency" as a negative consequence.', restitution:'❌ <strong>Restitution</strong> — You "pay" or "order" restitution; it is not something that can be "caused" by embezzlement.', 'an audit':'❌ <strong>An audit</strong> — An audit is a response to the crime, not damage caused by it.' } },
+    { id:'p2b3', label:'(3)', answer:'stakeholder', options:['stakeholder','auditor','embezzler','fraud'],
+      exp:{ stakeholder:'✅ <strong>Stakeholder</strong> — Correct! A stakeholder is any person with an interest in an organization — employees and investors both qualify.', auditor:'❌ <strong>Auditor</strong> — An auditor is a specialist who checks financial records, not a general category of person connected to a company.', embezzler:'❌ <strong>Embezzler</strong> — An embezzler is the guilty party. The sentence refers to innocent people who may lose confidence.', fraud:'❌ <strong>Fraud</strong> — Fraud is a type of crime, not a person. "Every fraud in the company" does not make sense.' } },
+    { id:'p2b4', label:'(4)', answer:'restitution', options:['restitution','transparency','an audit','breach of trust'],
+      exp:{ restitution:'✅ <strong>Restitution</strong> — Correct! Courts order embezzlers to "pay restitution" — to repay the money they stole.', transparency:'❌ <strong>Transparency</strong> — You cannot "pay transparency." It is a quality, not a financial payment.', 'an audit':'❌ <strong>An audit</strong> — Courts do not order criminals to "pay an audit." An audit is a procedure, not a financial penalty.', 'breach of trust':'❌ <strong>Breach of trust</strong> — You cannot "pay a breach of trust." It describes the moral violation, not financial repayment.' } },
+    { id:'p2b5', label:'(5)', answer:'transparency', options:['transparency','restitution','fraud','misappropriation'],
+      exp:{ transparency:'✅ <strong>Transparency</strong> — Correct! Organizations must "rebuild transparency" — restore openness and trust after the damage done.', restitution:'❌ <strong>Restitution</strong> — You "pay" or "receive" restitution; you do not "rebuild" it.', fraud:'❌ <strong>Fraud</strong> — An organization would not want to rebuild fraud. That is the crime they are recovering from.', misappropriation:'❌ <strong>Misappropriation</strong> — Like fraud, this is the crime itself. Organizations work to eliminate it, not rebuild it.' } }
+  ]
+};
+
+const USE_IT = [
+  { phrase:'a breach of trust', meaning:'when someone breaks the confidence that others had in them',
+    model:'Sharing your colleague\'s private information with clients was a serious breach of trust — even if you thought it would help.' },
+  { phrase:'to divert funds', meaning:'to redirect money away from its intended purpose',
+    model:'The treasurer had been diverting funds from the charity\'s education budget into a personal savings account for three years.' },
+  { phrase:'to pocket the surplus', meaning:'to secretly keep extra money that should belong to someone else',
+    model:'The contractor was found guilty of pocketing the surplus from the government contract after inflating material costs.' },
+  { phrase:'robust internal controls', meaning:'strong systems and procedures designed to prevent financial misuse',
+    model:'After the audit revealed several irregularities, the board agreed that robust internal controls were long overdue.' },
+  { phrase:'reputational damage', meaning:'serious harm to how a person or organization is perceived by others',
+    model:'Even after the charges were dropped, the reputational damage to the company took years to undo.' }
+];
+
+const COMPREHENSION = [
+  { id:'cq1', stem:'What is the key element that makes embezzlement different from ordinary theft?',
+    opts:[
+      { text:'The amount of money involved', correct:false, exp:'❌ The amount is not a defining factor. Even a small sum can constitute embezzlement.' },
+      { text:'The person had legal access and was trusted to manage the money', correct:true, exp:'✅ Correct. The person exploited legitimate, trusted access — that is what defines embezzlement.' },
+      { text:'The money always belongs to the government', correct:false, exp:'❌ Embezzlement occurs in private companies, small businesses, and government organizations — it is not limited to public funds.' },
+      { text:'The crime always involves fake invoices', correct:false, exp:'❌ Fake invoices are one example (Case 1), but embezzlement also includes inflating costs, taking cash, and other methods.' }
+    ]},
+  { id:'cq2', stem:'How does the article say government officials typically embezzle money?',
+    opts:[
+      { text:'By creating fake employee accounts', correct:false, exp:'❌ The article does not mention fake employee accounts in the government example.' },
+      { text:'By approving fake projects or inflating project costs', correct:true, exp:'✅ Correct. The article describes officials who approve fake projects or inflate costs, then pocket the extra money.' },
+      { text:'By taking cash from daily sales', correct:false, exp:'❌ That method is described in Case 3 (small businesses), not government embezzlement.' },
+      { text:'By transferring funds to a private company', correct:false, exp:'❌ The article does not describe this method in the government context.' }
+    ]},
+  { id:'cq3', stem:'Which of the following is NOT listed as a negative impact of embezzlement?',
+    opts:[
+      { text:'Erosion of trust between employees and employers', correct:false, exp:'❌ This IS listed as an impact — it is one of the five consequences described.' },
+      { text:'Improved transparency within the organization', correct:true, exp:'✅ Correct — this is NOT listed. Transparency is mentioned as something to rebuild after embezzlement, not as a benefit of it.' },
+      { text:'Legal consequences including fines and imprisonment', correct:false, exp:'❌ Legal consequences are clearly listed as one of the five negative impacts.' },
+      { text:'Emotional distress for victims', correct:false, exp:'❌ Emotional and moral consequences — including distress and a sense of betrayal — are explicitly included.' }
+    ]},
+  { id:'cq4', stem:'What does the article recommend to prevent embezzlement?',
+    opts:[
+      { text:'Reducing the number of employees with financial access', correct:false, exp:'❌ The article does not suggest reducing staff access as a prevention strategy.' },
+      { text:'Robust internal controls, regular audits, and a culture of ethical behaviour', correct:true, exp:'✅ Correct — the conclusion states exactly this combination as the prevention strategy.' },
+      { text:'Higher salaries for accountants to reduce temptation', correct:false, exp:'❌ Salaries are not mentioned anywhere in the article as a prevention measure.' },
+      { text:'Installing surveillance cameras in offices', correct:false, exp:'❌ The article focuses on financial systems and organizational culture, not physical surveillance.' }
+    ]}
+];
+
+const GRAMMAR_EX1 = [
+  { id:'gq1', before:'Financial fraud', after:'destroy a company\'s reputation permanently.', answer:'can', options:['can','may','might'],
+    exp:{ can:'✅ <strong>can</strong> — Correct. This is a general claim about what fraud typically causes. We use <em>can</em> for well-known, predictable consequences.', may:'❌ <strong>may</strong> — <em>May</em> refers to possibility in a specific, real situation. This sentence is a general statement about fraud as a category, so <em>can</em> is more appropriate.', might:'❌ <strong>might</strong> — <em>Might</em> implies hypothetical uncertainty. This is a factual generalization, so <em>might</em> is too weak and hesitant.' } },
+  { id:'gq2', before:'The victim', after:'need years to recover financially.', answer:'may', options:['can','may','might'],
+    exp:{ can:'❌ <strong>can</strong> — <em>Can</em> states a general pattern. Here we are talking about a specific real victim in a specific real situation, so <em>may</em> is more precise.', may:'✅ <strong>may</strong> — Correct. A real victim, a real situation. <em>May</em> expresses genuine possibility in a specific context.', might:'❌ <strong>might</strong> — <em>Might</em> adds extra uncertainty. In a real case involving a real person, <em>may</em> is the better choice.' } },
+  { id:'gq3', before:'A dishonest accountant', after:'manipulate the company\'s financial records.', answer:'might', options:['can','may','might'],
+    exp:{ can:'❌ <strong>can</strong> — <em>Can</em> suggests a known pattern. Here we are imagining a hypothetical unspecified person, so <em>might</em> is more fitting.', may:'❌ <strong>may</strong> — <em>May</em> works for specific real situations. "A dishonest accountant" is generic and imagined, not a real named person.', might:'✅ <strong>might</strong> — Correct. We are imagining what a hypothetical person could do. <em>Might</em> is ideal for uncertain or constructed scenarios.' } },
+  { id:'gq4', before:'Embezzlement', after:'result in costly legal battles for the organization.', answer:'can', options:['can','may','might'],
+    exp:{ can:'✅ <strong>can</strong> — Correct. This is a general statement about embezzlement as a category of crime. <em>Can</em> expresses a known, typical consequence.', may:'❌ <strong>may</strong> — <em>May</em> would suggest this applies only to one specific case. The sentence makes a general point about all embezzlement cases.', might:'❌ <strong>might</strong> — <em>Might</em> makes the claim sound too uncertain. Legal battles are a well-documented consequence, so <em>can</em> is the right level of confidence.' } },
+  { id:'gq5', before:'Investors and stakeholders', after:'lose confidence in the organization after a scandal.', answer:'may', options:['can','may','might'],
+    exp:{ can:'❌ <strong>can</strong> — <em>Can</em> is for general patterns. These are real investors in a real situation facing a real scandal, so <em>may</em> is more precise.', may:'✅ <strong>may</strong> — Correct. Real stakeholders, a real organization, a real scandal. <em>May</em> expresses genuine possibility in a specific context.', might:'❌ <strong>might</strong> — <em>Might</em> would suggest extra uncertainty. Losing confidence after a scandal is quite plausible, making <em>may</em> more appropriate.' } }
+];
+
+const GRAMMAR_EX2 = [
+  { id:'gc1', sentence:'"Embezzlement can lead to significant financial losses."', answer:'General Consequence', options:['General Consequence','Specific Possibility','Hypothetical Action'],
+    exp:{ 'General Consequence':'✅ <strong>General Consequence</strong> — Correct. <em>Can</em> here describes a known, typical result of embezzlement as a category. It is a factual generalization about how the crime works.', 'Specific Possibility':'❌ <strong>Specific Possibility</strong> — A specific possibility uses <em>may</em> and refers to a real situation with real people. This sentence is about embezzlement in general.', 'Hypothetical Action':'❌ <strong>Hypothetical Action</strong> — A hypothetical action imagines what someone might do. This sentence describes a consequence, not an imagined action.' } },
+  { id:'gc2', sentence:'"Victims may experience emotional distress."', answer:'Specific Possibility', options:['General Consequence','Specific Possibility','Hypothetical Action'],
+    exp:{ 'General Consequence':'❌ <strong>General Consequence</strong> — General consequences use <em>can</em>. <em>May</em> here focuses on real victims in a real situation — that is a specific possibility, not a general pattern.', 'Specific Possibility':'✅ <strong>Specific Possibility</strong> — Correct. <em>May</em> describes what real victims might genuinely experience. It acknowledges a real, individual possibility in context.', 'Hypothetical Action':'❌ <strong>Hypothetical Action</strong> — Hypothetical actions use <em>might</em> and involve imagined scenarios. Real victims experiencing real distress is not hypothetical.' } },
+  { id:'gc3', sentence:'"A government official might embezzle public funds by approving fake projects."', answer:'Hypothetical Action', options:['General Consequence','Specific Possibility','Hypothetical Action'],
+    exp:{ 'General Consequence':'❌ <strong>General Consequence</strong> — This sentence describes a possible action (what someone does), not a result or consequence that follows from an established fact.', 'Specific Possibility':'❌ <strong>Specific Possibility</strong> — <em>May</em> would fit a real, named person. "A government official" is unspecified and imagined — not a real individual.', 'Hypothetical Action':'✅ <strong>Hypothetical Action</strong> — Correct. <em>Might</em> is used here because the sentence imagines a generic official doing something uncertain. This is a constructed example, not a specific real case.' } },
+  { id:'gc4', sentence:'"The crime can result in costly legal battles and reputational damage."', answer:'General Consequence', options:['General Consequence','Specific Possibility','Hypothetical Action'],
+    exp:{ 'General Consequence':'✅ <strong>General Consequence</strong> — Correct. <em>Can result in</em> describes a known, typical outcome of the crime. This is a factual statement about what embezzlement generally causes.', 'Specific Possibility':'❌ <strong>Specific Possibility</strong> — A specific possibility would use <em>may</em> and refer to one real organization. "The crime" here is general and categorical.', 'Hypothetical Action':'❌ <strong>Hypothetical Action</strong> — The sentence describes consequences of the crime, not an imagined action someone might take. Hypothetical actions use <em>might</em>.' } },
+  { id:'gc5', sentence:'"Clients may also lose confidence in the organization."', answer:'Specific Possibility', options:['General Consequence','Specific Possibility','Hypothetical Action'],
+    exp:{ 'General Consequence':'❌ <strong>General Consequence</strong> — <em>Can</em> is used for general consequences. <em>May</em> here indicates this is a real possibility for actual clients of a real organization.', 'Specific Possibility':'✅ <strong>Specific Possibility</strong> — Correct. The article is describing the real impact on real clients of a specific organization. <em>May</em> captures a genuine possibility in a real context.', 'Hypothetical Action':'❌ <strong>Hypothetical Action</strong> — This is not imagined or uncertain in a hypothetical sense. Real clients losing real confidence in a real situation is not a hypothetical scenario.' } }
+];
+
+const DISCUSSION = [
+  { id:'dq1', q:'Do you know someone who has been a victim of embezzlement? How did the incident affect them emotionally and financially?',
+    a:'Yes, I know someone who was a victim of embezzlement. The incident caused them a lot of stress and anxiety. Financially, they lost a significant amount of money, which took a long time to recover.' },
+  { id:'dq2', q:'Have you ever witnessed or suspected fraudulent activities in your workplace? If so, what actions did you take, and what was the outcome?',
+    a:'Yes, I once suspected fraudulent activities in my workplace. I reported my concerns to my supervisor and the internal audit team. An investigation was conducted, and the individual involved was sentenced to prison.' },
+  { id:'dq3', q:'What measures do you think are most effective in preventing embezzlement? Have you ever been part of implementing such measures?',
+    a:'I believe regular audits, strict access controls, and clear financial policies are effective measures. I was part of a team that implemented a new accounting system to improve oversight and reduce the risk of fraud.' },
+  { id:'dq4', q:'Have you ever been in a position of trust with access to financial resources? How did you handle the responsibility, and what steps did you take to ensure transparency and integrity?',
+    a:'Yes, I have been in a position of trust with access to financial resources. I ensured transparency by keeping detailed records, following company policies, and regularly reporting to my supervisors.' }
+];
+
+// ── Render ────────────────────────────────────────────────────────────────
+
+function buildPassage(data, textId, qId) {
+  let html = data.template;
+  data.blanks.forEach((b, i) => {
+    html = html.replace(`[${b.id}]`, `<span class="blank-marker" id="${b.id}">${b.label}</span>`);
+  });
+  document.getElementById(textId).innerHTML = html;
+
+  const wrap = document.getElementById(qId);
+  data.blanks.forEach(b => {
+    const d = document.createElement('div');
+    d.className = 'question-block';
+    d.innerHTML = `
+      <div class="question-stem">Fill in blank ${b.label}</div>
+      <div class="pills">
+        ${b.options.map(o => `<button class="pill blue" data-qid="${b.id}" data-opt="${o}" data-correct="${o===b.answer}">${o}</button>`).join('')}
+      </div>
+      <div class="feedback-panel" id="fb-${b.id}">
+        ${b.options.map(o => `<div class="feedback-item ${o===b.answer?'correct-fb':'wrong-fb'}">${b.exp[o]}</div>`).join('')}
+      </div>`;
+    wrap.appendChild(d);
+  });
+}
+
+function buildUseIt() {
+  const wrap = document.getElementById('useitCards');
+  USE_IT.forEach((item, i) => {
+    const d = document.createElement('div');
+    d.className = 'phrase-card';
+    d.innerHTML = `
+      <div class="phrase-text">${item.phrase}</div>
+      <div class="phrase-meaning">${item.meaning}</div>
+      <textarea id="ta${i}" placeholder="Write your own sentence using this phrase…" oninput="updateWC(this,'wc${i}')"></textarea>
+      <div class="word-count" id="wc${i}">0 words</div>
+      <button class="see-example-btn" onclick="toggleEl('ma${i}',this,'Hide example','See example')">See example</button>
+      <div class="model-answer" id="ma${i}">${item.model}</div>`;
+    wrap.appendChild(d);
+  });
+}
+
+function buildComprehension() {
+  const wrap = document.getElementById('comprehensionQs');
+  COMPREHENSION.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'question-block';
+    d.innerHTML = `
+      <div class="question-stem">Q${i+1}: ${q.stem}</div>
+      <div class="pills">
+        ${q.opts.map(o => `<button class="pill" data-qid="${q.id}" data-opt="${o.text}" data-correct="${o.correct}">${o.text}</button>`).join('')}
+      </div>
+      <div class="feedback-panel" id="fb-${q.id}">
+        ${q.opts.map(o => `<div class="feedback-item ${o.correct?'correct-fb':'wrong-fb'}">${o.exp}</div>`).join('')}
+      </div>`;
+    wrap.appendChild(d);
+  });
+}
+
+function buildGrammarEx1() {
+  const wrap = document.getElementById('grammarEx1');
+  GRAMMAR_EX1.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'question-block purple';
+    d.innerHTML = `
+      <div class="grammar-sentence">${i+1}. ${q.before} <span class="g-blank" id="gb-${q.id}">_______</span> ${q.after}</div>
+      <div class="pills">
+        ${q.options.map(o => `<button class="pill purple" data-qid="${q.id}" data-opt="${o}" data-correct="${o===q.answer}" data-gtype="ex1">${o}</button>`).join('')}
+      </div>
+      <div class="feedback-panel" id="fb-${q.id}">
+        ${q.options.map(o => `<div class="feedback-item ${o===q.answer?'correct-fb':'wrong-fb'}">${q.exp[o]}</div>`).join('')}
+      </div>`;
+    wrap.appendChild(d);
+  });
+}
+
+function buildGrammarEx2() {
+  const wrap = document.getElementById('grammarEx2');
+  GRAMMAR_EX2.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'question-block purple';
+    d.innerHTML = `
+      <div class="cat-sentence">${i+1}. ${q.sentence}</div>
+      <div class="pills cat-pills">
+        ${q.options.map(o => `<button class="pill purple" data-qid="${q.id}" data-opt="${o}" data-correct="${o===q.answer}" data-gtype="ex2">${o}</button>`).join('')}
+      </div>
+      <div class="feedback-panel" id="fb-${q.id}">
+        ${q.options.map(o => `<div class="feedback-item ${o===q.answer?'correct-fb':'wrong-fb'}">${q.exp[o]}</div>`).join('')}
+      </div>`;
+    wrap.appendChild(d);
+  });
+}
+
+function buildDiscussion() {
+  const wrap = document.getElementById('discussionQs');
+  DISCUSSION.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'discussion-q';
+    d.innerHTML = `
+      <p><strong>Q${i+1}.</strong> ${q.q}</p>
+      <button class="reveal-btn" onclick="toggleEl('sa-${q.id}',this,'Hide sample','See sample answer')">See sample answer</button>
+      <div class="sample-answer" id="sa-${q.id}">${q.a}</div>`;
+    wrap.appendChild(d);
+  });
+}
+
+// ── Interaction ───────────────────────────────────────────────────────────
+
+// Universal pill handler — vocab, comprehension, grammar ex1 & ex2
+document.addEventListener('click', e => {
+  const pill = e.target.closest('.pill[data-qid]');
+  if (!pill || pill.disabled) return;
+
+  const { qid, opt, correct, gtype } = pill.dataset;
+  const isCorrect = correct === 'true';
+
+  document.querySelectorAll(`.pill[data-qid="${qid}"]`).forEach(p => {
+    p.disabled = true;
+    if (p.dataset.correct === 'true') p.classList.add('show-correct');
+  });
+  pill.classList.add(isCorrect ? 'correct-sel' : 'wrong-sel');
+  document.getElementById(`fb-${qid}`)?.classList.add('visible');
+
+  // Fill grammar ex1 blank
+  if (gtype === 'ex1') {
+    const b = document.getElementById(`gb-${qid}`);
+    if (b) { b.textContent = opt; b.classList.add('filled'); }
+    return;
+  }
+
+  // Fill vocab passage blank (gtype undefined, element exists)
+  if (!gtype) {
+    const b = document.getElementById(qid);
+    if (!b?.classList.contains('blank-marker')) return;
+    b.textContent = opt;
+    b.classList.add(isCorrect ? 'correct' : 'incorrect');
+    if (!isCorrect) {
+      const correctOpt = document.querySelector(`.pill[data-qid="${qid}"][data-correct="true"]`)?.dataset.opt;
+      if (correctOpt) setTimeout(() => { b.textContent = correctOpt; b.classList.replace('incorrect','correct'); }, 600);
+    }
+  }
+});
+
+// Warm-up prediction
+document.getElementById('predPills').addEventListener('click', e => {
+  const pill = e.target.closest('.pill[data-pred]');
+  if (!pill) return;
+  document.querySelectorAll('.pill[data-pred]').forEach(p => {
+    p.disabled = true;
+    if (p.dataset.pred === 'b') p.classList.add('correct-sel');
+  });
+  pill.classList.add(pill.dataset.pred === 'b' ? 'correct-sel' : 'wrong-sel');
+  document.getElementById('predFeedback').classList.add('visible');
+});
+
+function updateWC(ta, wcId) {
+  const n = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+  document.getElementById(wcId).textContent = `${n} word${n !== 1 ? 's' : ''}`;
+}
+
+function toggleEl(id, btn, showLabel, hideLabel) {
+  const el = document.getElementById(id);
+  const showing = el.classList.toggle('visible');
+  btn.textContent = showing ? showLabel : hideLabel;
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────
+
+const TAB_ORDER = ['warmup','vocab','useit','reading','grammar','discussion'];
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id === `pane-${id}`));
+  document.getElementById('progressFill').style.width = `${((TAB_ORDER.indexOf(id) + 1) / TAB_ORDER.length) * 100}%`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('tabNav').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn[data-tab]');
+  if (btn) switchTab(btn.dataset.tab);
+});
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.next-btn[data-next]');
+  if (btn) switchTab(btn.dataset.next);
+});
+
+// ── Reset ─────────────────────────────────────────────────────────────────
+
+function resetVocab() {
+  document.querySelectorAll('#pane-vocab .pill[data-qid]').forEach(p => {
+    p.disabled = false;
+    p.classList.remove('correct-sel','wrong-sel','show-correct');
+  });
+  document.querySelectorAll('#pane-vocab .feedback-panel').forEach(f => f.classList.remove('visible'));
+  [...P1.blanks, ...P2.blanks].forEach(b => {
+    const el = document.getElementById(b.id);
+    if (el) { el.textContent = b.label; el.className = 'blank-marker'; }
+  });
+}
+
+function resetGrammar() {
+  document.querySelectorAll('#pane-grammar .pill[data-qid]').forEach(p => {
+    p.disabled = false;
+    p.classList.remove('correct-sel','wrong-sel','show-correct');
+  });
+  document.querySelectorAll('#pane-grammar .feedback-panel').forEach(f => f.classList.remove('visible'));
+  GRAMMAR_EX1.forEach(q => {
+    const el = document.getElementById(`gb-${q.id}`);
+    if (el) { el.textContent = '_______'; el.classList.remove('filled'); }
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+
+buildPassage(P1, 'p1text', 'p1questions');
+buildPassage(P2, 'p2text', 'p2questions');
+buildUseIt();
+buildComprehension();
+buildGrammarEx1();
+buildGrammarEx2();
+buildDiscussion();
+</script>
+</body>
+</html>
